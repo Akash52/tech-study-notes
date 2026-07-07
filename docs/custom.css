@@ -236,14 +236,24 @@ body.close .sidebar-toggle { left: 14px; }
 .sidebar .search a { text-decoration: none; }
 
 /* ---------- Sidebar nav ----------
-   Docsify renders each item as <li><p [class="active"]><a>...</a></p></li>
-   and sub-headings as <ul class="app-sub-sidebar"><li><a>...</a></li></ul> */
+   Docsify's rendering is inconsistent: only the first ("Notes") category's
+   items get <li><p [class="active"]><a>...</a></p></li>; every other
+   category renders plain <li [class="active"]><a>...</a></li> with no <p>
+   wrapper at all. Both forms must be covered explicitly (verified via DOM
+   inspection - a generic descendant selector alone isn't enough because the
+   "active" class also lands on a different ancestor depending on the form).
+   Sub-headings render as <ul class="app-sub-sidebar"><li><a>...</a></li></ul>. */
 .sidebar-nav { padding: 0 12px 24px; }
 .sidebar-nav ul { list-style: none; margin: 0; padding: 0; }
 .sidebar-nav li { margin: 0; }
 .sidebar-nav p { margin: 0; }
 
-.sidebar-nav > ul > li > p > strong {
+/* Top-level category headers render as <li><p><strong>; nested sub-category
+   headers (e.g. Protocol under Backend Engineering) render as bare
+   <li><strong> with no <p> at all - both need covering separately since
+   they're at different DOM depths. */
+.sidebar-nav > ul > li > p > strong,
+.sidebar-nav li > strong {
   display: block;
   font-size: 11px;
   font-weight: 500;
@@ -253,6 +263,7 @@ body.close .sidebar-toggle { left: 14px; }
   padding: 12px 14px 6px;
 }
 
+.sidebar-nav li > a,
 .sidebar-nav li > p > a {
   display: block;
   padding: 8px 14px;
@@ -265,10 +276,12 @@ body.close .sidebar-toggle { left: 14px; }
   border: 1px solid transparent;
   transition: all var(--transition);
 }
+.sidebar-nav li > a:hover,
 .sidebar-nav li > p > a:hover {
   background: var(--bg-hover);
   color: var(--text);
 }
+.sidebar-nav li.active > a,
 .sidebar-nav li > p.active > a {
   background: var(--bg-active);
   color: var(--accent);

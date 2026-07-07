@@ -18,21 +18,72 @@ jobs:
       - name: Generate sidebar
         run: |
           cd docs
-          echo "- **📚 Notes**" > _sidebar.md
-          echo "  - [Home](/)" >> _sidebar.md
-          echo "" >> _sidebar.md
 
-          for file in $(find . -name "*.md" ! -name "_sidebar.md" ! -name "README.md" | sort); do
-            # Extract first H1 heading as the display name
-            title=$(grep -m 1 "^# " "$file" | sed 's/^# //')
-            # If no H1 found, use filename
-            if [ -z "$title" ]; then
-              title=$(basename "$file" .md | sed 's/_/ /g' | sed 's/\b\(.\)/\u\1/g')
-            fi
-            # Create relative path without ./
-            path=$(echo "$file" | sed 's|^\./||' | sed 's|\.md$||')
-            echo "  - [$title](/$path)" >> _sidebar.md
-          done
+          title_from_first_line() {
+            # Only treat "# Title" as a real H1 if it's the file's first substantive
+            # line, skipping leading blank lines and stray "---" dividers. Guards
+            # against matching a "# ..." comment buried in a later code fence.
+            awk '
+              NF==0 { next }
+              /^-{3,}$/ { next }
+              { if ($0 ~ /^# /) { sub(/^# +/, ""); print; } exit }
+            ' "$1"
+          }
+
+          title_from_filename() {
+            base=$(basename "$1" .md)
+            base=$(echo "$base" | sed -E 's/^[0-9]+_//')
+            echo "$base" | sed -E 's/[_-]+/ /g' | sed -E 's/(^| )([a-z])/\1\U\2/g'
+          }
+
+          link_title() {
+            t=$(title_from_first_line "$1")
+            if [ -z "$t" ]; then t=$(title_from_filename "$1"); fi
+            echo "$t"
+          }
+
+          folder_title() {
+            echo "$1" | sed -E 's/[_-]+/ /g' | sed -E 's/(^| )([a-z])/\1\U\2/g'
+          }
+
+          out="_sidebar.md"
+          {
+            echo "- **📚 Notes**"
+            echo "  - [Home](/)"
+            echo ""
+
+            # top-level docs/*.md (excluding README/sidebar) stay under Notes
+            for file in $(find . -maxdepth 1 -name "*.md" ! -name "README.md" ! -iname "_sidebar.md" | sort); do
+              t=$(link_title "$file")
+              path=$(echo "$file" | sed -E 's|^\./||; s/\.md$//')
+              echo "  - [$t](/$path)"
+            done
+            echo ""
+
+            # each top-level directory under docs/ becomes its own category
+            for dir in $(find . -mindepth 1 -maxdepth 1 -type d | sort); do
+              dname=$(basename "$dir")
+              echo "- **$(folder_title "$dname")**"
+
+              for file in $(find "$dir" -maxdepth 1 -name "*.md" | sort); do
+                t=$(link_title "$file")
+                path=$(echo "$file" | sed -E 's|^\./||; s/\.md$//')
+                echo "  - [$t]($path)"
+              done
+
+              # one level of subfolders becomes a nested sub-list
+              for subdir in $(find "$dir" -mindepth 1 -maxdepth 1 -type d | sort); do
+                sname=$(basename "$subdir")
+                echo "  - **$(folder_title "$sname")**"
+                for file in $(find "$subdir" -maxdepth 1 -name "*.md" | sort); do
+                  t=$(link_title "$file")
+                  path=$(echo "$file" | sed -E 's|^\./||; s/\.md$//')
+                  echo "    - [$t]($path)"
+                done
+              done
+              echo ""
+            done
+          } > "$out"
 
       - name: Commit sidebar
         run: |
