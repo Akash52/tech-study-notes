@@ -100,7 +100,7 @@ HTTP, DNS, SQL queries, RPC (gRPC, XML-RPC), REST APIs, GraphQL, SOAP, `ls` on a
 - **Protocol Buffer (Protobuf)** — Google's binary serialization format; schema-defined, fast to encode/decode, compact on the wire
 - **Content-Length** — HTTP header telling the receiver exactly how many bytes to expect in the body; the server uses this as the request boundary for the body
 
-**⚠️ Don't forget this:**
+**Don't forget this:**
 - Your framework does a lot of invisible work before your route handler runs — parsing, boundary detection, header extraction all happen first
 - Every format change (XML → JSON → Protobuf) is a cost/readability tradeoff — know which direction you need to go before you hit the wall
 - Request-response breaks for: real-time, long-running jobs, push notifications — those need different patterns

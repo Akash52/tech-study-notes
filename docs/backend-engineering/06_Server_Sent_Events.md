@@ -62,7 +62,7 @@ Unlike WebSockets (where you implement reconnection manually), `EventSource` rec
 | Protocol | Plain HTTP | WS upgrade |
 | Auto-reconnect | ✅ Built-in | ❌ Manual |
 | HTTP/2 compatible | ✅ Yes | ✅ Yes |
-| HTTP/1.1 conn limit | ⚠️ Yes (6-conn risk) | No (different protocol) |
+| HTTP/1.1 conn limit | Yes (6-conn risk) | No (different protocol) |
 | Browser support | All modern | All modern |
 | Use case | Feed, notifications, streaming | Chat, gaming, collab |
 
@@ -97,7 +97,7 @@ Unlike WebSockets (where you implement reconnection manually), `EventSource` rec
 - **`Last-Event-ID`** — header the browser sends on reconnect containing the `id` of the last received event; enables resumable streams
 - **Proxy buffering** — intermediary (nginx, CDN) accumulating response bytes before forwarding; breaks SSE's real-time delivery
 
-**⚠️ Don't forget this:**
+**Don't forget this:**
 - Never call `res.end()` while streaming — it closes the SSE connection
 - Always handle `req.on('close')` to remove dead connections — missing this is a memory leak
 - Check for proxy buffering in staging — SSE often works locally but "batches" through nginx without the right headers
@@ -194,7 +194,7 @@ app.get("/stream", (req, res) => {
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
-  // ⚠️ CRITICAL for nginx: without this, nginx buffers events
+  // CRITICAL for nginx: without this, nginx buffers events
   // and delivers them in batches instead of real-time
   res.setHeader("X-Accel-Buffering", "no");
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -222,7 +222,7 @@ app.get("/stream", (req, res) => {
   });
 
   // ── 5. Handle disconnect ───────────────────────────
-  // ⚠️ CRITICAL: without this, dead connections stay in registry forever
+  // CRITICAL: without this, dead connections stay in registry forever
   // Memory grows unboundedly; broadcast loop slows with every disconnect
   req.on("close", () => {
     clients.delete(clientId);

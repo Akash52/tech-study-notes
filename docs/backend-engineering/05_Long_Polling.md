@@ -99,7 +99,7 @@ The loop still exists. It's just inside the server now, costing nothing on the n
 - **Flow Control** — consumer's ability to regulate how fast it receives data; implicit in long polling (can only receive as fast as it re-polls)
 - **Server-side readiness loop** — internal loop on the server checking if data is ready; must yield to event loop to avoid blocking
 
-**⚠️ Don't forget this:**
+**Don't forget this:**
 - Always `await sleep(N)` inside your server-side readiness check loop — never a tight synchronous while loop
 - Client HTTP timeout must be longer than server max hold time — this bites everyone the first time
 - Long polling = flow control for the consumer — this is the entire reason Kafka uses it over push

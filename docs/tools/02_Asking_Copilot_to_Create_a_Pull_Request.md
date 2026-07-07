@@ -1,6 +1,6 @@
 ---
 
-# 📝 Asking Copilot to Create a Pull Request — Quick Notes
+# Asking Copilot to Create a Pull Request — Quick Notes
 
 ## Where You Can Trigger It From
 | Entry Point | How |
@@ -13,7 +13,7 @@
 | **JetBrains IDE** | Type prompt → click "Delegate to Cloud Agent" |
 | **Eclipse** | Type prompt → click delegate icon → select repo |
 | **Visual Studio 2026** | Enable in Tools > Options > GitHub → click delegate button |
-| **GitHub Mobile** | Tap ✦ icon → type prompt → Accept |
+| **GitHub Mobile** | Tap icon → type prompt → Accept |
 | **GitHub CLI** | `gh agent-task create "your prompt"` *(v2.80.0+)* |
 | **GitHub MCP Server** | Use `create_pull_request_with_copilot` tool in any MCP-enabled IDE |
 | **Raycast** | "Create Task" command → fill prompt + repo |
@@ -29,7 +29,7 @@
 5. (Optional) Select a custom agent or AI model
 6. Submit → Copilot starts working in the background
 
-> ⚠️ After assigning, Copilot won't see new comments on the issue. Add follow-ups in the **PR comments** instead.
+> After assigning, Copilot won't see new comments on the issue. Add follow-ups in the **PR comments** instead.
 
 ---
 
@@ -77,4 +77,4 @@ gh agent-task create "prompt" --follow    # watch logs live
 
 ---
 
-Share the next link whenever you're ready! 🚀
+Share the next link whenever you're ready!

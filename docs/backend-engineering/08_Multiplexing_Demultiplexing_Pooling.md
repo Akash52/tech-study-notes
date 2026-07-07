@@ -88,7 +88,7 @@ If you send 3 queries on the same connection, responses can come back out of ord
 - **PgBouncer** — A lightweight PostgreSQL connection pooler; sits between app and DB, massively reduces connection overhead
 - **QUIC/HTTP/3** — UDP-based protocol where each stream is truly independent; no TCP-level head-of-line blocking
 
-**⚠️ Don't forget this:**
+**Don't forget this:**
 - HTTP/2 = 1 TCP connection, not 1 request. The streams inside are logical, not physical
 - Pool size should match DB capacity, not app concurrency. Common mistake: set pool=100 because you have 100 workers, then watch Postgres run out of memory
 - SSE on HTTP/1.1 in production is a footgun — always verify HTTP/2 is enabled

@@ -108,7 +108,7 @@ How long does the server keep completed job results? If you never clean them up,
 - **TTL (Time To Live)** — expiry duration for stored data; how long the server retains job results before deleting them
 - **Idempotent status check** — a GET to `/status?id=X` should always return the same result for the same job state; no side effects
 
-**⚠️ Don't forget this:**
+**Don't forget this:**
 - Never use timestamp as a job ID in production — use UUID
 - In-memory job store breaks the moment you have more than one server instance — use Redis
 - Always set a TTL on completed jobs or your store fills up

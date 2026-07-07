@@ -121,7 +121,7 @@ This is the most important real-world application of async in backend engineerin
 - **Async Commit** — DB returns success before confirming disk write; faster, less durable
 - **Async Replication** — primary doesn't wait for replicas to confirm; faster commits, eventual consistency on replicas
 
-**⚠️ Don't forget this:**
+**Don't forget this:**
 - `async/await` looks sync but isn't — the event loop is still free during `await`
 - Node.js has a 4-thread pool for blocking ops — know this when debugging mysterious slowdowns under load
 - Async commit in Postgres = you can lose data on crash — never for critical writes
@@ -203,7 +203,7 @@ function demonstrateSyncVsAsync() {
   console.log("\n── SYNC FILE READ ──");
   console.log("1. Before sync read");
 
-  // ⚠️ This BLOCKS the entire Node.js process
+  // This BLOCKS the entire Node.js process
   // WHY THIS IS BAD: during this read, no other requests can be handled,
   // no timers fire, no callbacks execute — event loop is frozen
   const data = fs.readFileSync("./test.txt", "utf8");

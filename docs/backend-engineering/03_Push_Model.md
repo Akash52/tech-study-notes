@@ -93,7 +93,7 @@ The fix: check `socket.readyState` before sending, and clean up closed connectio
 - **`readyState`** — WebSocket property: `CONNECTING(0)`, `OPEN(1)`, `CLOSING(2)`, `CLOSED(3)`; always check `=== 1` before sending
 - **WebSocket Upgrade** — HTTP request with `Upgrade: websocket` header that converts an HTTP connection into a persistent WebSocket connection
 
-**⚠️ Don't forget this:**
+**Don't forget this:**
 - Always wire `ws.on('close')` to remove dead connections — missing this is the #1 push server bug
 - Check `ws.readyState === WebSocket.OPEN` before every `send()` in a broadcast loop
 - Push requires sticky sessions or a shared pub/sub layer (Redis) when running multiple server instances
@@ -187,7 +187,7 @@ function broadcast(message, excludeClientId = null) {
   clients.forEach((client, clientId) => {
     if (clientId === excludeClientId) return; // don't echo to sender (optional)
 
-    // ⚠️ CRITICAL: always check readyState before sending
+    // CRITICAL: always check readyState before sending
     // WHY: a client can disconnect between iterations of this loop
     // Sending to a closed socket throws an error without this check
     if (client.ws.readyState === WebSocket.OPEN) {

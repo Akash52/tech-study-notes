@@ -127,7 +127,7 @@ This is how Kafka serves both the compression service AND the copyright service 
 - **DLQ (Dead Letter Queue)** — destination for messages that failed delivery/processing repeatedly
 - **Offset** — Kafka's pointer to a consumer group's position in a partition log
 
-**⚠️ Don't forget this:**
+**Don't forget this:**
 - Always ACK **after** successful processing, never on receipt
 - Design consumers to be idempotent — assume you will receive duplicates
 - Always configure a DLQ — silent message loss is the worst bug to debug
@@ -293,7 +293,7 @@ async function startConsumer(consumerId) {
       await processVideo(job, consumerId);
 
       // ── ACK after successful processing ───────────
-      // ⚠️ CRITICAL: ACK only here, after we KNOW processing succeeded
+      // CRITICAL: ACK only here, after we KNOW processing succeeded
       // If we ACK on receipt and then crash during processing:
       //   → message is gone from broker
       //   → processing never completed

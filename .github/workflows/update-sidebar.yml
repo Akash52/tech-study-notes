@@ -48,7 +48,7 @@ jobs:
 
           out="_sidebar.md"
           {
-            echo "- **📚 Notes**"
+            echo "- **Notes**"
             echo "  - [Home](/)"
             echo ""
 

@@ -93,7 +93,7 @@ The mind-bending part: **you can layer stateless on stateful and vice versa.**
 - **Connection ID (QUIC)** — identifier attached to every QUIC packet, simulating connection state on top of connectionless UDP
 - **Refresh Token** — long-lived token used only to get new short-lived access tokens; stored in DB, can be revoked
 
-**⚠️ Don't forget this:**
+**Don't forget this:**
 - The real test: "can I restart this backend and have clients not notice?" — if yes, stateless
 - Stateless app + stateful system is the normal production setup — don't confuse the two layers
 - JWT gives you statelessness at the cost of revocation control — always use short expiry
@@ -177,8 +177,8 @@ const JWT_SECRET = "super-secret-key"; // use env var in prod
 
 // ══ PATTERN 1: STATEFUL ══════════════════════════════
 // Sessions stored in this Map = LOCAL PROCESS MEMORY
-// ⚠️ This dies when the process restarts
-// ⚠️ This breaks with multiple backend instances (load balancing)
+// This dies when the process restarts
+// This breaks with multiple backend instances (load balancing)
 const inMemorySessions = new Map();
 
 app.post("/stateful/login", (req, res) => {
@@ -225,7 +225,7 @@ app.post("/stateful/simulate-restart", (req, res) => {
 // No server storage — everything lives in the token
 // ✓ Any instance can validate this
 // ✓ Restart backend — clients aren't affected
-// ⚠️ Cannot revoke before expiry — keep TTL short
+// Cannot revoke before expiry — keep TTL short
 
 app.post("/stateless/login", (req, res) => {
   const { username, password } = req.body;

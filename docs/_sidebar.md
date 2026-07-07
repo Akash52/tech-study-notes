@@ -1,4 +1,4 @@
-- **📚 Notes**
+- **Notes**
   - [Home](/)
 
   - [React Fiber, Explained Simply](/react_fiber_explained)
@@ -40,11 +40,11 @@
   - [TypeScript Interview Questions & Answers](language-guides/ts-interview-qa)
 
 - **Tools**
-  - [📝 GitHub Copilot Cloud Agent — Quick Notes](tools/01_GitHub_Copilot_Cloud_Agent)
-  - [📝 Asking Copilot to Create a Pull Request — Quick Notes](tools/02_Asking_Copilot_to_Create_a_Pull_Request)
-  - [📝 Asking Copilot to Make Changes to an Existing PR — Quick Notes](tools/03_Asking_Copilot_to_Make_Changes_to_an_Existing_PR)
-  - [📝 Reviewing a Pull Request Created by Copilot — Quick Notes](tools/04_Reviewing_a_Pull_Request_Created_by_Copilot)
-  - [📋 Tracking GitHub Copilot Sessions](tools/05_Tracking_GitHub_Copilot_Sessions)
+  - [GitHub Copilot Cloud Agent — Quick Notes](tools/01_GitHub_Copilot_Cloud_Agent)
+  - [Asking Copilot to Create a Pull Request — Quick Notes](tools/02_Asking_Copilot_to_Create_a_Pull_Request)
+  - [Asking Copilot to Make Changes to an Existing PR — Quick Notes](tools/03_Asking_Copilot_to_Make_Changes_to_an_Existing_PR)
+  - [Reviewing a Pull Request Created by Copilot — Quick Notes](tools/04_Reviewing_a_Pull_Request_Created_by_Copilot)
+  - [Tracking GitHub Copilot Sessions](tools/05_Tracking_GitHub_Copilot_Sessions)
   - [Complete Interview Preparation — GitHub Copilot Features](tools/06_SDLC_Copilot)
   - [Git Day-to-Day Tricks & Scenarios](tools/GIT_TRICKS)
 

@@ -2,7 +2,7 @@
 
 ---
 
-## 📌 How to Use This Guide
+## How to Use This Guide
 > Each question has: **Question → Scenario → How to Answer → Key Points to Mention**
 
 ---
@@ -170,7 +170,7 @@
 
 ---
 
-# 🎯 QUICK REFERENCE CARD
+# QUICK REFERENCE CARD
 
 | Question Type | Your Strategy |
 |---|---|
@@ -183,7 +183,7 @@
 
 ---
 
-# 💬 POWER PHRASES TO USE IN INTERVIEW
+# POWER PHRASES TO USE IN INTERVIEW
 
 > - *"The trigger for me was repeated PR comments on the same issue"*
 > - *"I treat these files like code — they live in the repo and evolve with the project"*
@@ -194,4 +194,4 @@
 
 ---
 
-Want me to do a **full mock interview** now where I ask you these questions one by one and give feedback on your answers? 🎯
+Want me to do a **full mock interview** now where I ask you these questions one by one and give feedback on your answers?

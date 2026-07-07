@@ -1,6 +1,6 @@
 ---
 
-# 📝 Reviewing a Pull Request Created by Copilot — Quick Notes
+# Reviewing a Pull Request Created by Copilot — Quick Notes
 
 ## The Golden Rule
 **Always review Copilot's PR thoroughly before merging.** You are still responsible for the code that gets merged.
@@ -15,19 +15,19 @@
 - Want to fix something yourself? Just **check out the branch** and push manually
 - Use the **model picker** when submitting a plain PR comment to change the AI model *(not available in review comments)*
 
-> 💡 **Tip:** Batch your review comments together rather than submitting them one by one — it's more efficient for Copilot to handle them all at once.
+> **Tip:** Batch your review comments together rather than submitting them one by one — it's more efficient for Copilot to handle them all at once.
 
 ---
 
 ## How to Know Copilot Has Seen Your Comment
 When Copilot picks up your comment and starts a new session:
-- 👀 **Eyes emoji** is added as a reaction to your comment
+- **Eyes emoji** is added as a reaction to your comment
 - A **"Copilot has started work"** event appears in the PR timeline
 
 ---
 
 ## Important Notes on Approvals
-> ⚠️ If your repo requires a minimum number of PR approvals:
+> If your repo requires a minimum number of PR approvals:
 > - **Your own approval does NOT count** toward the required number on a Copilot-created PR
 > - Someone **else** must approve before it can be merged
 
@@ -48,7 +48,7 @@ When Copilot picks up your comment and starts a new session:
 ---
 
 ## Giving Feedback on Copilot's Work
-- Use 👍 / 👎 buttons on Copilot's PRs and comments
-- 👎 prompts you for a reason + optional comment → helps Anthropic improve Copilot
+- Use the thumbs up / thumbs down buttons on Copilot's PRs and comments
+- Thumbs down prompts you for a reason + optional comment → helps Anthropic improve Copilot
 
 ---

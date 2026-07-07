@@ -1,6 +1,6 @@
 ---
 
-# 📝 Asking Copilot to Make Changes to an Existing PR — Quick Notes
+# Asking Copilot to Make Changes to an Existing PR — Quick Notes
 
 ## The Core Idea
 Mention **`@copilot`** in any PR comment or review to ask Copilot to make changes to that pull request.
@@ -11,7 +11,7 @@ Mention **`@copilot`** in any PR comment or review to ask Copilot to make change
 - Copilot **pushes commits directly** to the PR's existing branch
 - Once done, it **requests your review** automatically
 
-> 💡 Want a separate PR instead? Just say so in plain English:
+> Want a separate PR instead? Just say so in plain English:
 > `"@copilot open a PR to fix the tests"`
 
 ---

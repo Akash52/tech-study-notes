@@ -1,6 +1,6 @@
 ---
 
-# 📝 GitHub Copilot Cloud Agent — Quick Notes
+# GitHub Copilot Cloud Agent — Quick Notes
 
 ## What is it?
 An AI agent that works **autonomously in the background** (like a human dev) to complete coding tasks on GitHub — without you being hands-on.
