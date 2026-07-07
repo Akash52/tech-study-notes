@@ -1,0 +1,43 @@
+name: Update Sidebar
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**.md'
+
+jobs:
+  update-sidebar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate sidebar
+        run: |
+          cd docs
+          echo "- **📚 Notes**" > _sidebar.md
+          echo "  - [Home](/)" >> _sidebar.md
+          echo "" >> _sidebar.md
+
+          for file in $(find . -name "*.md" ! -name "_sidebar.md" ! -name "README.md" | sort); do
+            # Extract first H1 heading as the display name
+            title=$(grep -m 1 "^# " "$file" | sed 's/^# //')
+            # If no H1 found, use filename
+            if [ -z "$title" ]; then
+              title=$(basename "$file" .md | sed 's/_/ /g' | sed 's/\b\(.\)/\u\1/g')
+            fi
+            # Create relative path without ./
+            path=$(echo "$file" | sed 's|^\./||' | sed 's|\.md$||')
+            echo "  - [$title](/$path)" >> _sidebar.md
+          done
+
+      - name: Commit sidebar
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/_sidebar.md
+          git diff --staged --quiet || git commit -m "docs: auto-update sidebar"
+          git push
