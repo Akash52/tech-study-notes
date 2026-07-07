@@ -8,7 +8,7 @@
   --bg-active: #EBF5EE;
   --text: #1A1A18;
   --text-secondary: #6B6B66;
-  --text-muted: #9C9C96;
+  --text-muted: #6E6E68; /* WCAG AA (4.5:1) against --bg-sidebar and --bg */
   --accent: #2D7A50;
   --accent-light: #E8F5ED;
   --accent-dim: #2D7A5022;
@@ -36,7 +36,7 @@
     --bg-active: #1A2E22;
     --text: #E8E8E3;
     --text-secondary: #9C9C96;
-    --text-muted: #6B6B66;
+    --text-muted: #82827C; /* WCAG AA (4.5:1) against --bg-sidebar and --bg */
     --accent: #4ADE80;
     --accent-light: #1A2E22;
     --accent-dim: #4ADE8018;
@@ -56,7 +56,6 @@
 * { box-sizing: border-box; }
 
 html, body {
-  height: 100%;
   margin: 0;
   background: var(--bg);
   color: var(--text);
@@ -65,6 +64,7 @@ html, body {
   line-height: 1.7;
   letter-spacing: -0.01em;
 }
+body { overflow-x: hidden; }
 
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -87,29 +87,33 @@ html, body {
 }
 
 .content {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: var(--sidebar-width);
-  overflow-y: auto;
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
   background: var(--bg);
 }
 
 body.close .sidebar { transform: translateX(-100%); }
-body.close .content { left: 0; }
+body.close .content { margin-left: 0; }
 
 @media screen and (max-width: 768px) {
-  .sidebar { transform: translateX(-100%); }
+  .sidebar {
+    width: min(var(--sidebar-width), 85vw);
+    transform: translateX(-100%);
+    z-index: 40;
+    box-shadow: var(--shadow-md);
+  }
+  /* On mobile Docsify uses body.close to mean "sidebar open" (inverted from desktop) */
   body.close .sidebar { transform: translateX(0); }
-  .content { left: 0; }
+  .content { margin-left: 0; }
 }
 
 .sidebar-toggle {
   position: fixed;
   top: 14px;
   left: calc(var(--sidebar-width) + 14px);
-  z-index: 20;
+  /* Must stay above .sidebar's mobile z-index (40) or the open drawer
+     covers it and swallows taps meant to close it. */
+  z-index: 50;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -122,6 +126,11 @@ body.close .content { left: 0; }
   transition: left var(--transition);
 }
 body.close .sidebar-toggle { left: 14px; }
+@media screen and (max-width: 768px) {
+  /* Must come after the base rules above: same specificity, so source order decides. */
+  .sidebar-toggle,
+  body.close .sidebar-toggle { left: 14px; }
+}
 .sidebar-toggle-button {
   display: flex;
   flex-direction: column;
@@ -167,13 +176,22 @@ body.close .sidebar-toggle { left: 14px; }
   flex-shrink: 0;
 }
 
-/* ---------- Search ---------- */
-.search {
+/* ---------- Search ----------
+   Docsify's search plugin injects its own <style> tag at runtime (after
+   this stylesheet loads) using the exact same selectors below. Same
+   specificity + later in the DOM means its defaults win on any property
+   we don't out-specify, so every rule here is prefixed with `.sidebar`
+   to reliably beat it (verified via computed-style inspection: without
+   this prefix, `.search input` padding-left was silently reset from
+   34px to the plugin's 7px, and `.matching-post` border-bottom was
+   reset to a hardcoded #eee that's invisible in dark mode). */
+.sidebar .search {
   padding: 0 16px 14px;
   border-bottom: 1px solid var(--border-light);
   margin-bottom: 8px;
 }
-.search input {
+.sidebar .search .input-wrap { display: flex; align-items: center; }
+.sidebar .search input {
   width: 100%;
   padding: 9px 14px 9px 34px;
   border: 1.5px solid var(--border);
@@ -189,28 +207,33 @@ body.close .sidebar-toggle { left: 14px; }
   outline: none;
   transition: all var(--transition);
 }
-.search input::placeholder { color: var(--text-muted); }
-.search input:focus {
+.sidebar .search input::placeholder { color: var(--text-muted); }
+.sidebar .search input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-dim);
 }
-.search .clear-button { color: var(--text-muted); }
-.search .results-panel {
+.sidebar .search .clear-button svg circle { fill: var(--border); }
+.sidebar .search .clear-button svg path { stroke: var(--text-secondary); }
+.sidebar .search .results-panel {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 10px;
   margin-top: 8px;
   box-shadow: var(--shadow-md);
   padding: 4px;
+  max-height: min(60vh, 480px);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
-.search .matching-post {
+.sidebar .search .matching-post {
   border-bottom: 1px solid var(--border-light);
   padding: 8px;
 }
-.search .matching-post:last-child { border-bottom: none; }
-.search h2 { color: var(--accent); font-size: 13px; margin: 4px 0; }
-.search p { color: var(--text-secondary); font-size: 12.5px; margin: 2px 0; }
-.search a { text-decoration: none; }
+.sidebar .search .matching-post:last-child { border-bottom: none; }
+.sidebar .search h2 { color: var(--accent); font-size: 13px; margin: 4px 0; }
+.sidebar .search p { color: var(--text-secondary); font-size: 12.5px; margin: 2px 0; }
+.sidebar .search p.empty { color: var(--text-muted); }
+.sidebar .search a { text-decoration: none; }
 
 /* ---------- Sidebar nav ----------
    Docsify renders each item as <li><p [class="active"]><a>...</a></p></li>
@@ -282,6 +305,9 @@ body.close .sidebar-toggle { left: 14px; }
   margin: 0 auto;
   padding: 40px 48px 100px;
 }
+@media screen and (max-width: 768px) {
+  .markdown-section { padding: 68px 20px 60px; }
+}
 .markdown-section h1 {
   font-size: 30px;
   font-weight: 650;
@@ -290,6 +316,9 @@ body.close .sidebar-toggle { left: 14px; }
   color: var(--text);
   margin: 0 0 10px;
   border-bottom: none;
+}
+@media screen and (max-width: 768px) {
+  .markdown-section h1 { font-size: 26px; }
 }
 .markdown-section h1 + p {
   font-size: 16px;
