@@ -1,4 +1,4 @@
-# 📚 Tech Study Notes
+# Tech Study Notes
 
 Plain-language notes on things worth understanding properly — one topic at a time.
 
