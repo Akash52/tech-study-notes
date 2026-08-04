@@ -7,6 +7,7 @@ Use the sidebar to browse, or hit `/` to search.
 ## Deep Dives
 
 - [React Fiber, Explained Simply](react_fiber_explained.md) — how React decides what to update, and why it matters for performance.
+- [React Fiber Internals Deep Dive](react-fiber-internals-notes.md) — building a "smoosh mode" with Dan Abramov as a vehicle to explore Fiber's begin/complete/commit phases, double buffering, and the reconciler source.
 
 ## Interview Prep
 
@@ -15,6 +16,7 @@ Use the sidebar to browse, or hit `/` to search.
 | [Angular Interview Questions and Answers](interview-prep/angular-interview-questions.md) | Components, Services, NgModules, Router, RxJS, Signals, Standalone, Control Flow, `@defer` |
 | [React Interview Mastery Guide](interview-prep/react-interview-mastery-guide.md) | Hooks, Virtual DOM, Fiber, State, Context, Performance, Server Components, React 19 |
 | [JavaScript Interview Mastery Guide](interview-prep/javascript-interview-mastery-guide.md) | Scope, Closures, Prototypes, Async/Await, Event Loop, Memory, ES6+ |
+| [The JavaScript Interview Bible](javascript-interview-bible.md) | Engine internals to production war stories — execution context, type coercion, the event loop, and more, chapter by chapter |
 | [TypeScript Interview Mastery Guide](interview-prep/typescript-interview-mastery-guide.md) | Types, Generics, Utility Types, Decorators, Conditional Types, Declaration Merging |
 | [Design Patterns Interview Mastery Guide](interview-prep/design-patterns-interview-mastery-guide.md) | GoF 23 Patterns, Singleton, Observer, Factory, Strategy, modern JS/TS patterns |
 | [Data Structures & Algorithms Interview Mastery Guide](interview-prep/dsa-interview-mastery-guide.md) | Big-O, Arrays, Trees, Graphs, DP, Sorting |

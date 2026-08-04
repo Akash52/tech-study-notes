@@ -1,7 +1,9 @@
 - **Notes**
   - [Home](/)
 
+  - [The JavaScript Interview Bible](/javascript-interview-bible)
   - [React Fiber, Explained Simply](/react_fiber_explained)
+  - [React Fiber Internals Deep Dive — "Smoosh Mode"](/react-fiber-internals-notes)
 
 - **Backend Engineering**
   - [Request-Response — Lecture Breakdown](backend-engineering/01_Request-Response-Notes)
