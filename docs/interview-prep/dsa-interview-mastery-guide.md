@@ -2990,7 +2990,7 @@ function employeeFreeTime(schedule) {
 ####  Explanation:
 "Find top K elements using heap (priority queue). Min heap of size K keeps K largest elements. Max heap finds K smallest. O(n log k) better than O(n log n) sort."
 
-#### �� Common Problems:
+#### Common Problems:
 ```javascript
 // Simple MinHeap implementation
 class MinHeap {
@@ -4591,7 +4591,7 @@ ZADD user:123:feed tweet_id timestamp
 ##  ADVANCED & TRICKY (Q26-30)
 
 ### **Q26: Backtracking Pattern**
-**Difficulty**: �� Senior | **Frequency**: 
+**Difficulty**: Senior | **Frequency**:
 
 ####  Common Problems:
 ```javascript
@@ -5239,7 +5239,7 @@ function setZeroes(matrix) {
 
 **Result**: "Combined best of both - clean code with safeguards. Learned to benchmark assumptions rather than debate opinions."
 
-#### �� Key Principles:
+#### Key Principles:
 - "**Benchmark, don't guess** - opinions → data"
 - "**Context matters** - no universal 'best' algorithm"
 - "**Find middle ground** - hybrid approaches often optimal"

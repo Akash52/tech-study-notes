@@ -3208,7 +3208,7 @@ function useAsync(asyncFunction) {
 
 *Remember: Understanding WHY React works the way it does is more valuable than memorizing syntax.*
 
-## �� PRACTICAL CODING QUESTIONS (Q16-20)
+## PRACTICAL CODING QUESTIONS (Q16-20)
 ### Build Real Components and Solutions
 
 ---
