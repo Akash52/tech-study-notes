@@ -79,10 +79,17 @@ footer. The index is a flat in-memory array — **nothing is written to
 substring (72) → mid-word substring (62) → acronym (55) → subsequence fuzzy (40) —
 adjusted by consecutive-run and word-boundary bonuses and by gap/length
 penalties. Fields are weighted: heading ×3.0, file title ×1.5, parent H2 ×1.2,
-snippet ×0.6. Multi-word queries use AND semantics. A file's own H1 is boosted
+prose body ×0.6. Multi-word queries use AND semantics. A file's own H1 is boosted
 so typing a file name offers "jump to this note" before its subsections.
 
-Measured on the real 1,152-record index: **1.5 ms per query** (~660 queries/sec).
+Section prose (up to 1,500 chars per section) is kept for **full-text recall**,
+matched by substring only — running the fuzzy subsequence scan across bodies
+that long would dominate the per-keystroke cost. Headings keep full fuzzy
+matching. Without this, terms appearing only mid-paragraph (`io_uring`,
+`PgBouncer`, `Envoy`) would have become unfindable, which the old plugin did
+support; dropping it would have been a recall regression.
+
+Measured on the real 1,152-record index: **1.8 ms per query** (~550 queries/sec).
 
 ---
 
@@ -155,6 +162,9 @@ harnesses were temporary and have been removed):
   41 after opening the palette.
 - **`localStorage` stays clean** — no search index key is written.
 - **WCAG AA passes in both themes** (light 4.69–17.43:1, dark 4.87–13.58:1).
+- **Full-text recall**: prose-only terms resolve — `io_uring` 3 hits, `PgBouncer` 3,
+  `Envoy` 5, `epoll` 18. `cleanInline` passes 10/10 unit checks, including
+  snake_case preservation (`MAX_RETRIES_COUNT`, `__init__`).
 - **375×812 viewport**: modal fits at 351px, no horizontal scroll, 16px input
   (no iOS zoom), 68px rows, and the hamburger/search 44px touch targets do not overlap.
 

@@ -40,8 +40,8 @@
   var MAX_RESULTS = 20;         // top-N shown; ranking quality over quantity
   var RECENT_LIMIT = 5;         // pages listed when the query is empty
   var FETCH_CONCURRENCY = 8;    // parallel markdown fetches while indexing
-  var SNIPPET_CHARS = 60;       // preview length under each result
-  var SNIPPET_SOURCE = 240;     // raw chars scanned to build that preview
+  var SNIPPET_CHARS = 60;       // preview length shown under each result
+  var BODY_CHARS = 1500;        // prose per section kept for full-text recall
   var INDEXING_NOTICE_MS = 200; // delay before showing the "Indexing…" state
   var RERENDER_MS = 120;        // throttle for live re-render while indexing
   var RECENT_KEY = 'tsn.recentPages';
@@ -51,7 +51,7 @@
   var W_HEADING = 3.0;
   var W_FILE = 1.5;
   var W_PARENT = 1.2;
-  var W_SNIPPET = 0.6;
+  var W_BODY = 0.6;
 
   /* Scoring tiers, strongest first. */
   var S_EQUAL = 100;   // query === whole field
@@ -98,14 +98,26 @@
     return slugify;
   }
 
-  /** Strips inline markdown so headings/snippets read as plain prose. */
+  /**
+   * Strips inline markdown so headings/snippets read as plain prose.
+   *
+   * Emphasis markers are matched as delimiter PAIRS rather than stripped
+   * blanket-style. Removing every `_` would corrupt snake_case identifiers -
+   * `io_uring` became `iouring` and was then unfindable - and the same applies
+   * to MAX_RETRIES, __init__, and similar. Underscore emphasis is therefore
+   * only unwrapped at word boundaries.
+   */
   function cleanInline(text) {
     return String(text)
-      .replace(/!\[[^\]]*\]\([^)]*\)/g, '')       // images
-      .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')    // links -> label
-      .replace(/`+/g, '')                          // inline code ticks
-      .replace(/[*_~]{1,3}/g, '')                  // emphasis markers
-      .replace(/<[^>]+>/g, '')                     // inline html
+      .replace(/!\[[^\]]*\]\([^)]*\)/g, '')        // images
+      .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')     // links -> label
+      .replace(/`+/g, '')                           // inline code ticks
+      .replace(/\*\*\*([^*\n]+?)\*\*\*/g, '$1')     // ***both***
+      .replace(/\*\*([^*\n]+?)\*\*/g, '$1')         // **strong**
+      .replace(/\*([^\s*][^*\n]*?)\*/g, '$1')       // *emphasis* (not "2 * 3")
+      .replace(/~~([^~\n]+?)~~/g, '$1')             // ~~strike~~
+      .replace(/(^|[\s([{])_{1,2}([^_\n]+?)_{1,2}(?=[\s)\]}.,;:!?]|$)/g, '$1$2')
+      .replace(/<[^>]+>/g, '')                      // inline html
       .replace(/\s+/g, ' ')
       .trim();
   }
@@ -152,6 +164,10 @@
     function flush() {
       if (!pending) return;
       var text = cleanInline(buffer);
+      // Keep the prose for matching (the old plugin indexed full section
+      // bodies; dropping that would lose recall for anything not in a
+      // heading). Only the first SNIPPET_CHARS are ever displayed.
+      pending.bl = text.toLowerCase();
       if (text.length > SNIPPET_CHARS) {
         // Trim back to a word boundary so previews do not cut mid-word.
         var cut = text.slice(0, SNIPPET_CHARS);
@@ -165,7 +181,6 @@
         text = cut.replace(/[\s,.;:—-]+$/, '') + '…';
       }
       pending.snippet = text;
-      pending.sl = text.toLowerCase();
       pending = null;
       buffer = '';
     }
@@ -211,7 +226,7 @@
           hl: display.toLowerCase(),
           fl: '',
           pl: level === 3 ? currentH2.toLowerCase() : '',
-          sl: ''
+          bl: ''
         };
         records.push(record);
         pending = record;
@@ -219,7 +234,7 @@
       }
 
       // Accumulate prose for the pending heading's preview snippet.
-      if (pending && buffer.length < SNIPPET_SOURCE) {
+      if (pending && buffer.length < BODY_CHARS) {
         var t = line.trim();
         // Skip table rules and bare list bullets - they make noisy previews.
         if (t && !/^\|?[\s:|-]+\|?$/.test(t)) {
@@ -426,6 +441,19 @@
   }
 
   /**
+   * Prose match. Substring only, deliberately: section bodies run to ~1500
+   * chars and running the fuzzy subsequence scan over them would dominate the
+   * per-keystroke cost. Headings keep full fuzzy matching; prose gives exact
+   * recall, which is what the old plugin provided.
+   */
+  function scoreBody(query, body) {
+    if (!body) return 0;
+    var at = body.indexOf(query);
+    if (at < 0) return 0;
+    return (at === 0 || !isWordCode(body.charCodeAt(at - 1))) ? S_WORD : S_MID;
+  }
+
+  /**
    * Scores one record against all query tokens.
    * Every token must hit some field, otherwise the record is discarded.
    */
@@ -444,9 +472,9 @@
         var p = W_PARENT * scoreField(token, record.pl);
         if (p > best) best = p;
       }
-      if (best < W_SNIPPET * S_EQUAL) {
-        var s = W_SNIPPET * scoreField(token, record.sl);
-        if (s > best) best = s;
+      if (best < W_BODY * S_WORD) {
+        var b = W_BODY * scoreBody(token, record.bl);
+        if (b > best) best = b;
       }
       if (best <= 0) return 0;   // AND semantics across tokens
       total += best;
