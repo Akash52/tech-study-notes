@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
   <link rel="stylesheet" href="custom.css">
+  <link rel="stylesheet" href="command-palette.css">
 </head>
 <body>
   <div id="app"></div>
@@ -22,11 +23,6 @@
       // sidebars), not a bug: harmless, invisible to users, devtools-only.
       loadSidebar: '_sidebar.md',
       subMaxLevel: 3,
-      search: {
-        placeholder: 'Search notes...',
-        noData: 'No results found',
-        depth: 6
-      },
       auto2top: true,
       coverpage: false,
       pagination: {
@@ -41,10 +37,11 @@
   <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
 
   <!-- Plugins -->
-  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
   <script src="custom.js"></script>
+  <!-- Command palette search (replaces the docsify-search plugin) -->
+  <script src="command-palette.js"></script>
 
   <!-- Syntax highlighting -->
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
