@@ -1,11 +1,20 @@
-# UX Upgrade — Command Palette Search
+# UX Upgrades
 
-Replaces the `docsify-search` plugin with a centered, keyboard-driven command
-palette (VS Code `Cmd+P` / Linear `Cmd+K` style).
+Two features, built in order of the UX audit's ranked gaps:
+
+1. **[Command Palette Search](#1--command-palette-search)** — replaces the
+   `docsify-search` plugin with a centered, keyboard-driven palette.
+2. **[Study Progress Tracking](#2--study-progress-tracking)** — per-section
+   checkboxes, sidebar progress rings, and "continue where you left off".
 
 **There is no new build step, no new dependency, and no config to set.** The
 site is still plain Docsify loaded from CDN — open `docs/index.html` through any
-static server and it works.
+static server and it works. All state is `localStorage` / `sessionStorage`;
+there is no backend.
+
+---
+
+# 1 — Command Palette Search
 
 ---
 
@@ -170,14 +179,127 @@ harnesses were temporary and have been removed):
 
 ---
 
-## Known issues found along the way (not fixed — out of scope)
+## Content issues found and fixed
 
-1. **Corrupted characters in one heading.**
-   `docs/interview-prep/react-interview-mastery-guide.md:3211` contains literal
-   U+FFFD replacement bytes (`## �� PRACTICAL CODING QUESTIONS (Q16-20)`),
-   left over from an earlier emoji removal. It renders as broken glyphs on the
-   page itself, not only in search. Fixing it means editing a content file.
+Both were repaired in a separate commit (`fix: broken unicode heading + add
+missing H1`):
 
-2. **Six files have no H1**, so the sidebar and search fall back to a
-   filename-derived title: the five `tools/0*.md` Copilot notes and
-   `backend-engineering/Protocol/internet_protocol.md`.
+1. **Literal U+FFFD replacement characters** left by an earlier emoji strip,
+   in 6 places across 3 files (not 1, as first reported). Fixing the React
+   guide's heading also cleaned its anchor, which had been embedding the
+   replacement character. `js-es2024-guide.md:1272` was deliberately left
+   alone — its replacement character is intentional prose about U+FFFD.
+
+2. **One file genuinely lacked an H1**: `Protocol/internet_protocol.md`.
+   The five `tools/0*.md` files reported earlier *do* have H1s — on line 3,
+   after a leading `---` divider. The original audit checked only line 1 and
+   was wrong; adding titles there would have produced duplicate H1s.
+
+
+---
+
+# 2 — Study Progress Tracking
+
+Lightweight completion tracking for a 38-note study corpus: a checkbox beside
+every H2, progress rings in the sidebar, per-page bulk controls, and a
+"Continue" row in the command palette.
+
+## What changed
+
+| Action | File | Notes |
+|---|---|---|
+| Added | `docs/progress-tracker.js` | Checkbox injection, rings, bulk controls |
+| Added | `docs/progress-tracker.css` | Styling; consumes the existing custom properties |
+| Modified | `docs/index.html` | Added two tags |
+| Modified | `docs/command-palette.js` | "Continue where you left off" row in the empty state |
+
+No content file, `_sidebar.md`, or CI workflow was touched.
+
+## Usage
+
+- **Checkbox beside each H2.** Appears on hover, on keyboard focus, and
+  whenever the section is complete; always visible on touch devices. Completed
+  headings are deliberately **not** dimmed or struck through — this is study
+  material that gets re-read.
+- **Bulk controls** below the H1: `N / M sections complete`, *Mark all
+  complete*, *Reset progress*. There is no global reset; per-page only.
+- **Sidebar rings** on every note link: empty track when unstarted, a
+  proportional accent arc when partial, a filled ring with a tick at 100%.
+- **Category counters** such as `2/16` beside each sidebar heading, counting
+  *notes* completed. Backend Engineering aggregates its nested Protocol
+  sub-list, hence 16 rather than 10.
+- **Overall line** under the search trigger: `N / 38 notes complete`.
+- **Palette "Continue" row** above Recent when the query is empty, pointing at
+  the first unchecked H2 of the most recent unfinished note.
+
+## Storage schema
+
+```
+studyProgress:{route}   ->  { "heading-slug": true, ... }
+studyProgressMeta       ->  { "{route}": h2Count, ... }
+```
+
+Example: `studyProgress:/backend-engineering/04_Short_Polling` →
+`{ "_1-the-gist": true }`. Removing every check deletes the key rather than
+leaving an empty object. Both keys are `localStorage`, so progress survives a
+browser restart; the palette's recents remain in `sessionStorage`.
+
+## Maintenance notes
+
+**H2 is the unit.** H3s are sub-points within an H2's topic, so only H2s get a
+checkbox — 372 across the corpus. Slugs come straight from the rendered
+`h2.id`, so progress keys and anchors can never drift apart, and none of the
+slugify subtleties documented above apply here.
+
+**Totals are learned, not scanned.** A ring needs `done / total`, but computing
+the total means knowing a page's H2 count. Scanning all 38 files on load would
+undo the lazy-index work done for search, so each page records its own H2 count
+into `studyProgressMeta` as it renders. Pages never opened simply show an empty
+ring. Category counters sidestep the problem entirely by counting *notes*
+complete out of notes listed in the sidebar — both known without fetching.
+
+**The checkbox is injected as the H2's first child**, ahead of Docsify's
+`.anchor` link, so clicking it never triggers anchor navigation. It carries no
+text, so `custom.js`'s "On this page" TOC — which reads `h2.textContent` — is
+unaffected.
+
+**The tick is a `background-image`, not a `::after`.** `<input>` is a replaced
+element and pseudo-elements on replaced elements are not reliably rendered
+across browsers.
+
+**The 44px touch target is anchored to the checkbox's right edge**, not centred
+on it. Centring pushed the hit area 3px past the start of the heading text, so
+tapping the first characters of a heading toggled the checkbox instead of
+following its anchor. Growing leftwards puts the extra area in the page's left
+padding, where nothing else is clickable.
+
+**The palette reads this feature's `localStorage` directly** rather than
+touching `progress-tracker.js`'s state, so neither module depends on the other
+being loaded. If the tracker is absent, the Continue row simply never renders.
+
+## Verification
+
+- **32/32 assertions pass** in headless Chrome — checkboxes on all three
+  content shapes; persistence across navigation and in `localStorage`; rings
+  present, labelled, and updating live without reload; category aggregation
+  including nested Protocol; bulk mark/reset; the palette Continue row ranked
+  above Recent and targeting the first *unchecked* H2; search unaffected.
+- **38/38 pages** render with exact H2-to-checkbox parity (**372** checkboxes),
+  38 rings, 7 category counters, **0 console errors**. TOC, pagination and the
+  reading-progress bar all still work.
+- **WCAG AA in both themes** — 4.51:1 to 6.68:1 for every piece of secondary
+  text the feature adds.
+- **375×812**: 44px touch targets with 11px clearance from the heading anchor,
+  38/38 rings on-screen in the open drawer, no horizontal scroll.
+
+> Testing note: CSS transitions do not advance under Chrome's
+> `--virtual-time-budget`, so computed `transform` / `background-color` can be
+> sampled mid-flight and look wrong. Measure end state with
+> `* { transition: none !important }` injected, or you will chase phantom bugs.
+
+---
+
+## Next gap
+
+**Interactive Learning (still 1.0)** — see the auto-`<details>` sketch in the
+handover notes.

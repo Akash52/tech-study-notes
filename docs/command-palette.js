@@ -542,6 +542,46 @@
     } catch (e) { /* private mode - recents are optional */ }
   }
 
+  /* ---- "Continue where you left off" -----------------------------------
+     Reads progress-tracker.js's localStorage schema directly rather than
+     touching that module's state, so neither feature depends on the other
+     being loaded. If the progress tracker is absent, nothing is found and the
+     row simply does not render. */
+
+  var PROGRESS_PREFIX = 'studyProgress:';
+
+  function readProgress(route) {
+    try {
+      var raw = window.localStorage.getItem(PROGRESS_PREFIX + route);
+      var parsed = raw ? JSON.parse(raw) : {};
+      return (parsed && typeof parsed === 'object' && !(parsed instanceof Array)) ? parsed : {};
+    } catch (e) { return {}; }
+  }
+
+  /**
+   * The first unchecked H2 on the most recently visited page that still has
+   * unfinished sections. Needs the index, so it yields nothing until the
+   * first build completes - at which point the palette re-renders anyway.
+   */
+  function findContinue() {
+    if (!index.length) return null;
+    var recents = readRecents();
+    for (var i = 0; i < recents.length; i++) {
+      var route = recents[i].route;
+      var done = readProgress(route);
+      var fileTitle = recents[i].title;
+      for (var j = 0; j < index.length; j++) {
+        var rec = index[j];
+        if (rec.route !== route || rec.level !== 2) continue;
+        if (rec.fileTitle) fileTitle = rec.fileTitle;
+        if (!done[rec.anchor]) {
+          return { route: route, fileTitle: fileTitle, heading: rec.heading, anchor: rec.anchor };
+        }
+      }
+    }
+    return null;   // everything visited is complete, or nothing tracked yet
+  }
+
   /* ------------------------------------------------------------------ *
    * Palette UI
    * ------------------------------------------------------------------ */
@@ -675,18 +715,37 @@
 
     if (!query.trim()) {
       var recents = readRecents();
+      var cont = findContinue();
+      var idx = 0;
+
+      if (cont) {
+        html +=
+          '<li class="cp-group" role="presentation">Continue</li>' +
+          '<li class="cp-result cp-continue" role="option" id="cp-opt-' + idx + '" ' +
+            'aria-selected="false" ' +
+            'aria-label="' + esc('Continue ' + cont.fileTitle + ', next section ' + cont.heading) + '" ' +
+            'data-route="' + esc(cont.route) + '" data-anchor="' + esc(cont.anchor) + '">' +
+            '<div class="cp-result-main">' +
+              '<span class="cp-continue-icon" aria-hidden="true">→</span>' +
+              '<span class="cp-result-title">' + esc(cont.heading) + '</span>' +
+            '</div>' +
+            '<div class="cp-result-crumb">' + esc(cont.fileTitle) + '</div>' +
+          '</li>';
+        idx++;
+      }
+
       if (recents.length) {
         html += '<li class="cp-group" role="presentation">Recent</li>';
-        for (var r = 0; r < recents.length; r++) {
+        for (var r = 0; r < recents.length; r++, idx++) {
           html +=
-            '<li class="cp-result" role="option" id="cp-opt-' + r + '" aria-selected="false" ' +
+            '<li class="cp-result" role="option" id="cp-opt-' + idx + '" aria-selected="false" ' +
               'data-route="' + esc(recents[r].route) + '" data-anchor="">' +
               '<div class="cp-result-main">' +
                 '<span class="cp-result-title">' + esc(recents[r].title) + '</span>' +
               '</div>' +
             '</li>';
         }
-      } else {
+      } else if (!cont) {
         html = '<li class="cp-empty" role="presentation">' +
           (index.length
             ? 'Type to search ' + index.length.toLocaleString() + ' sections.'
