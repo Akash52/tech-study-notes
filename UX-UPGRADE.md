@@ -8,6 +8,8 @@ Two features, built in order of the UX audit's ranked gaps:
    checkboxes, sidebar progress rings, and "continue where you left off".
 3. **[Theme Switcher](#3--theme-switcher)** — Light / System / Dark with
    persistence and no flash of the wrong theme.
+4. **[Wide-screen layout](#4--wide-screen-layout)** — the article and its
+   "On this page" rail are laid out as one unit.
 
 **There is no new build step, no new dependency, and no config to set.** The
 site is still plain Docsify loaded from CDN — open `docs/index.html` through any
@@ -376,6 +378,69 @@ grouping and screen-reader semantics come from the browser.
   `color-scheme`, and the palette modal all follow.
 - **38/38 pages**, 372 checkboxes, 38 rings, exactly one switcher (no duplicate
   injection across navigations), **0 console errors**.
+
+---
+
+# 4 — Wide-screen layout
+
+## The problem
+
+`.markdown-section` centred itself inside `.content`, while `#page-toc` was
+`position: fixed` against the **viewport's** right edge. Two independent
+positioning systems for two things that must sit next to each other, which
+failed in opposite directions depending on window width:
+
+| Viewport | Gap left of article | Article ↔ TOC | Article uses |
+|---|--:|--:|--:|
+| 1280px | 414px | **−73px — TOC on top of the text** | 56% |
+| 1440px | 494px | 7px | 50% |
+| 1857px | 702px | 216px | 39% |
+| 2200px | 874px | 387px | 33% |
+
+So the TOC physically overlapped article text between roughly 1200px and
+1425px, and above that the two drifted apart leaving a ~700px empty gutter.
+
+## The fix
+
+`[article + 56px gutter + TOC]` is treated as a single reading region, capped
+and centred in the space beside the sidebar. The article is left-aligned in
+that region and always reserves the TOC rail, so the gap between them is a
+constant 56px and cannot collapse. `#page-toc` is offset by the same
+expression as the content padding, so it lands on the region's right edge
+rather than the window's.
+
+On screens ≥1600px the article column widens to 920px but **prose does not** —
+paragraphs, lists and headings stay at `--prose-max` (740px ≈ 74ch), while
+code blocks and tables use the extra width. This corpus is code-heavy, so that
+is where the space is worth spending.
+
+| Viewport | Left gutter | Article ↔ TOC | Article uses |
+|---|--:|--:|--:|
+| 1280px | 48px | 56px | 51% |
+| 1440px | 86px | 56px | 51% |
+| 1857px | **205px** (was 702) | 56px | **49%** (was 39) |
+| 2200px | 376px | 56px | 42% |
+
+## Maintenance notes
+
+**The wide-screen block is `min-width: 1201px`, not 1200.** The rule hiding
+the TOC is `max-width: 1200px`, which *includes* 1200 — so at exactly 1200px
+both matched, and the article reserved a 256px rail for a TOC that was not
+being rendered, shrinking to 571px beside empty space. If you change one
+breakpoint, change the other.
+
+**`--layout-offset` follows the sidebar.** It is `--sidebar-width` normally and
+`0px` under `body.close`, so the centring maths stays correct when the sidebar
+is collapsed.
+
+## Verification
+
+- Measured at 375 / 768 / 1024 / 1199 / 1200 / 1440 / 1857 / 2200px: the
+  article↔TOC gap is a constant 56px wherever the TOC renders, gutters are
+  symmetric to within the scrollbar width, and 1200px is back to a full 720px
+  article.
+- **38/38 pages** at both 1440px and 1857px: no TOC/article overlap anywhere,
+  no horizontal scroll, 0 console errors, all other features intact.
 
 ---
 

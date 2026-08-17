@@ -21,8 +21,20 @@
 :root {
   color-scheme: light;
 
-  /* ---- light palette (default) ---- */
+  /* ---- layout ---- */
   --sidebar-width: 272px;
+  /* Horizontal offset the main column sits behind. Becomes 0 when the sidebar
+     is collapsed, so the centring maths below follows it. */
+  --layout-offset: var(--sidebar-width);
+  --prose-max: 740px;     /* ~74ch at 15px Inter, inside the 75ch target */
+  --article-max: var(--prose-max);   /* widened on large screens, see below */
+  --toc-width: 200px;
+  --toc-gutter: 56px;
+  /* The article and its "On this page" rail are centred together as one unit. */
+  --reading-max: calc(var(--article-max) + var(--toc-gutter) + var(--toc-width));
+  --reading-pad: max(48px, (100vw - var(--layout-offset) - var(--reading-max)) / 2);
+
+  /* ---- light palette (default) ---- */
   --bg: #FAFAF7;
   --bg-sidebar: #F2F1EC;
   --bg-card: #FFFFFF;
@@ -171,6 +183,7 @@ body { overflow-x: hidden; }
 
 body.close .sidebar { transform: translateX(-100%); }
 body.close .content { margin-left: 0; }
+body.close { --layout-offset: 0px; }
 
 @media screen and (max-width: 768px) {
   .sidebar {
@@ -505,6 +518,71 @@ body.close #reading-progress { left: 0; }
 }
 #page-toc a:hover { color: var(--text-secondary); border-left-color: var(--text-muted); }
 #page-toc a.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+
+/* ---------- Wide-screen layout ----------
+   Below 1200px the TOC is hidden and the article simply centres in the main
+   column. At and above 1200px the TOC appears, and the two must be laid out
+   together - previously they were not, which caused two distinct problems:
+
+     - `.markdown-section` centred inside `.content` while `#page-toc` was
+       fixed to the VIEWPORT's right edge. Between roughly 1200px and 1425px
+       the two overlapped (measured: 73px of overlap at 1280px, with TOC text
+       sitting on top of the article).
+     - Above ~1600px they drifted apart instead. At 1857px the article sat
+       702px from the sidebar with a 216px moat before the TOC, using only
+       39% of the window.
+
+   Both are fixed by treating [article + gutter + TOC] as a single region of
+   at most --reading-max, centred in the space beside the sidebar. The article
+   is left-aligned inside that region and always reserves the TOC rail, so the
+   gap between them is a constant 56px and can never collapse.
+
+   NOTE the 1201px: the rule that hides the TOC below is `max-width: 1200px`,
+   which INCLUDES 1200. Using min-width:1200 here made both match at exactly
+   1200px, so the article reserved a 256px rail for a TOC that was not being
+   rendered and shrank to 571px beside empty space. */
+@media screen and (min-width: 1201px) {
+  .content {
+    padding-left: var(--reading-pad);
+    padding-right: var(--reading-pad);
+  }
+  .markdown-section {
+    /* Reserve the rail, then cap for line length. */
+    width: calc(100% - var(--toc-width) - var(--toc-gutter));
+    max-width: var(--article-max);
+    margin: 0;
+    padding: 40px 0 100px;
+  }
+  #page-toc {
+    left: auto;
+    /* Same expression as the content padding, so the rail lands exactly on
+       the region's right edge rather than the window's. */
+    right: var(--reading-pad);
+    width: var(--toc-width);
+  }
+}
+
+/* On large screens the article column grows but PROSE does not: paragraphs,
+   lists and headings stay at --prose-max so line length is preserved, while
+   code blocks and tables - which genuinely benefit from width, and dominate
+   this corpus - use the extra room. Without this the column simply floated in
+   the middle of the window with ~700px of dead space beside it. */
+@media screen and (min-width: 1600px) {
+  :root { --article-max: 920px; }
+
+  .markdown-section > p,
+  .markdown-section > ul,
+  .markdown-section > ol,
+  .markdown-section > h1,
+  .markdown-section > h2,
+  .markdown-section > h3,
+  .markdown-section > h4,
+  .markdown-section > blockquote,
+  .markdown-section > hr,
+  .markdown-section > .pt-bulk {
+    max-width: var(--prose-max);
+  }
+}
 
 @media screen and (max-width: 1200px) {
   #page-toc { display: none; }
