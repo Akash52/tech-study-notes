@@ -649,7 +649,36 @@ design; the drawer is the mobile equivalent.
 
 ---
 
-## Next gap
+## Ideas not taken
 
-**Interactive Learning (still 1.0)** — see the auto-`<details>` sketch in the
-handover notes.
+**Interactive Learning** — collapsing each interview answer behind a
+`<details>` so a Q&A page can be used as a self-test. This was built and then
+removed by choice: it works, but folding the answers changes these pages from
+reference material into a quiz, and they are used as reference.
+
+Worth knowing if it is ever revisited: detection has to be **per question, not
+per file**. The corpus has 134 questions across 6 files in three different
+shapes, mixed *within* files — the DSA guide has 45 questions of which only 15
+use a `#### Strong Answer:` heading, and `ts-interview-qa` writes
+`**Strong Answer:**` as bold text instead. Leading context also has to stay
+outside the fold: in `tools/06_SDLC_Copilot.md` the `**Scenario:**` blockquote
+*is* the question.
+
+---
+
+## Remaining ideas
+
+Ranked by measured gap, from the audit:
+
+1. **Accessibility** — no skip-to-content link; `.sidebar-toggle` is 34×34px,
+   below the 44px touch target; a `:focus-visible` sweep is worth doing.
+2. **Related notes** — only 4 of 38 files have a "Related" section; sidebar
+   adjacency and folder membership could generate the rest.
+3. **Back-to-top** on very long pages — the largest note is 164KB.
+4. **Search match highlighting** — the last thing holding search below 5.0.
+5. **Prism languages** — 9 code blocks across `json`, `sql`, `nginx`,
+   `protobuf` and `graphql` render unhighlighted. Smaller than the original
+   audit implied: the Docker cheatsheet uses `bash`, which is loaded.
+6. **Duplicate table of contents** — now that the right rail covers H3s, it
+   overlaps heavily with the sidebar's own per-page anchor list
+   (`subMaxLevel: 3`). Worth deciding which one earns its place.
