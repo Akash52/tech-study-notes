@@ -3207,7 +3207,7 @@ const users = await api.request("listUsers", {
 ---
 
 ### **Q18: Create a deep readonly type with recursion**
-**Difficulty**: �� Senior | **Frequency**: 
+**Difficulty**: Senior | **Frequency**:
 
 ####  Complete Implementation:
 ```typescript
@@ -4151,7 +4151,7 @@ function UserProfile({ userId }: { userId: number }) {
 *[Continuing to Q22-Q25 and final sections...]*
 
 ### **Q22: How do you type higher-order functions and function composition?**
-**Difficulty**: �� Senior | **Frequency**: 
+**Difficulty**: Senior | **Frequency**:
 
 ####  Complete Implementation:
 ```typescript

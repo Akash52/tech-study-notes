@@ -1,3 +1,5 @@
+# Internet Protocol
+
 ## 1. THE GIST
 
 This lecture is about how data actually moves across a network at the lowest meaningful level. Every HTTP request, database query, and gRPC call you write eventually gets wrapped inside an **IP packet** — just a blob of data with a source and destination IP address. You'll learn how routers decide where to send packets using subnet masks, why packets have a time-to-live counter to prevent infinite loops, and how ICMP is the behind-the-scenes messenger protocol that powers `ping` and `traceroute`. The key practical payoff: if your database is on a different subnet than your app server, every query is making an extra hop through a router — and that router can become your hidden performance bottleneck.
