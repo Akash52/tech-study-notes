@@ -82,9 +82,10 @@ on viewports under 768px, and on desktop whenever the sidebar is collapsed.
 
 On mobile that floating button is hidden while the drawer is open — the drawer
 carries its own pinned search field, so the button would be both redundant and
-sitting on top of it. The hamburger becomes an X at the same time, so there is
-one obvious way out rather than a menu icon that has already done its job.
-`aria-expanded` and the accessible name follow the state.
+sitting on top of it. The hamburger becomes an X at the same time and moves to
+the drawer's own top-right corner, opposite the logo, which is where a panel's
+close control is expected. `aria-expanded` and the accessible name follow the
+state.
 
 ---
 
