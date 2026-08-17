@@ -4,12 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tech Study Notes</title>
+  <script>
+    /* Applies the saved theme before any stylesheet paints. This MUST stay
+       inline and in <head>: an external script runs after the CSS has already
+       rendered, which shows a flash of the wrong theme on every page load.
+       Key and values are mirrored in theme-toggle.js - change both together.
+       Absent/invalid means "system", which leaves data-theme unset so the
+       prefers-color-scheme media queries decide. */
+    (function () {
+      try {
+        var t = localStorage.getItem('tsn.theme');
+        if (t === 'dark' || t === 'light') {
+          document.documentElement.setAttribute('data-theme', t);
+        }
+      } catch (e) {}
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
   <link rel="stylesheet" href="custom.css">
   <link rel="stylesheet" href="command-palette.css">
   <link rel="stylesheet" href="progress-tracker.css">
+  <link rel="stylesheet" href="theme-toggle.css">
 </head>
 <body>
   <div id="app"></div>
@@ -45,6 +62,8 @@
   <script src="command-palette.js"></script>
   <!-- Study progress tracking (localStorage) -->
   <script src="progress-tracker.js"></script>
+  <!-- Light/dark theme switcher -->
+  <script src="theme-toggle.js"></script>
 
   <!-- Syntax highlighting -->
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>

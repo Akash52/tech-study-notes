@@ -1,0 +1,102 @@
+/* ==========================================================================
+   Theme switcher
+   --------------------------------------------------------------------------
+   Styles for theme-toggle.js. The token plumbing that makes light/dark
+   switchable lives in custom.css - this file only styles the control.
+
+   The control is pinned to the bottom of the sidebar with `position: sticky`
+   so it stays reachable without scrolling past 38 nav links.
+   ========================================================================== */
+
+/* The selected segment needs its own colour. --bg-card works in light (a white
+   pill on the off-white track) but collapses in dark, where --bg-card and
+   --bg-code are both #1E1E1C, leaving the chip invisible against the track.
+   Relying on the icon tint alone would make selection a colour-only signal.
+   Follows the same two-path pattern documented in custom.css. */
+:root {
+  --theme-chip: #FFFFFF;
+  --dark-theme-chip: #33332F;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --theme-chip: var(--dark-theme-chip); }
+}
+:root[data-theme="dark"] { --theme-chip: var(--dark-theme-chip); }
+
+.theme-switch-wrap {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  padding: 10px 16px 14px;
+  /* Opaque, because nav links scroll underneath it. */
+  background: var(--bg-sidebar);
+  border-top: 1px solid var(--border-light);
+}
+
+.theme-switch {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  background: var(--bg-code);
+  border: 1px solid var(--border-light);
+  border-radius: 9px;
+}
+
+.theme-opt {
+  position: relative;
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+/* The radio stays focusable and clickable, covering its segment, but the
+   visible affordance is the icon span below. display:none would remove it
+   from the tab order and kill native arrow-key navigation. */
+.theme-opt input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.theme-opt-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 7px;
+  color: var(--text-muted);
+  transition: background-color var(--transition), color var(--transition);
+}
+.theme-opt-icon svg { width: 14px; height: 14px; }
+
+.theme-opt:hover .theme-opt-icon { color: var(--text-secondary); }
+
+.theme-opt input:checked + .theme-opt-icon {
+  background: var(--theme-chip);
+  color: var(--accent);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10);
+}
+
+.theme-opt input:focus-visible + .theme-opt-icon {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Touch targets: each segment gets a 44px-tall hit area on touch devices,
+   where the pointer is coarse and there is no hover to aim with. */
+@media (hover: none), (pointer: coarse) {
+  .theme-opt { min-height: 44px; }
+  .theme-switch-wrap { padding-bottom: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-opt-icon { transition: none !important; }
+}

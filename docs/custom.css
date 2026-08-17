@@ -1,4 +1,27 @@
+/* ==========================================================================
+   Theme tokens
+   --------------------------------------------------------------------------
+   Light values are the defaults on :root. Dark values are declared once as
+   --dark-*, then mapped onto the real tokens by the two rules below.
+
+   Two rules are needed because a dark theme can be activated two ways, and
+   CSS cannot merge a media query with a plain selector:
+
+     1. the OS asks for dark and the reader has not explicitly chosen light
+     2. the reader explicitly chose dark in the sidebar switcher
+
+   Only the *mapping* is duplicated - every colour still has exactly one
+   definition, so the two paths cannot drift apart. Add a token here and it
+   must be added to both mapping rules.
+
+   `color-scheme` is set alongside so native UI (scrollbars, form controls,
+   the canvas behind the page) matches the chosen theme.
+   ========================================================================== */
+
 :root {
+  color-scheme: light;
+
+  /* ---- light palette (default) ---- */
   --sidebar-width: 272px;
   --bg: #FAFAF7;
   --bg-sidebar: #F2F1EC;
@@ -24,33 +47,87 @@
   --radius: 10px;
   --transition: 200ms cubic-bezier(0.25, 0.1, 0.25, 1);
   --search-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239C9C96' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='M21 21l-4.35-4.35'/%3E%3C/svg%3E");
+
+  /* ---- dark palette values, applied by the two rules below ---- */
+  --dark-bg: #141413;
+  --dark-bg-sidebar: #1A1A18;
+  --dark-bg-card: #1E1E1C;
+  --dark-bg-code: #1E1E1C;
+  --dark-bg-hover: rgba(255, 255, 255, 0.04);
+  --dark-bg-active: #1A2E22;
+  --dark-text: #E8E8E3;
+  --dark-text-secondary: #9C9C96;
+  --dark-text-muted: #82827C; /* WCAG AA (4.5:1) against --bg-sidebar and --bg */
+  --dark-accent: #4ADE80;
+  --dark-accent-light: #1A2E22;
+  --dark-accent-dim: #4ADE8018;
+  --dark-border: #2A2A27;
+  --dark-border-light: #232320;
+  --dark-code-keyword: #A78BFA;
+  --dark-code-string: #34D399;
+  --dark-code-comment: #6B7280;
+  --dark-code-func: #60A5FA;
+  --dark-code-number: #FBBF24;
+  --dark-progress-bar: #4ADE80;
+  --dark-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --dark-search-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236B6B66' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='M21 21l-4.35-4.35'/%3E%3C/svg%3E");
 }
 
+/* Path 1: follow the OS, unless the reader has pinned light. */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #141413;
-    --bg-sidebar: #1A1A18;
-    --bg-card: #1E1E1C;
-    --bg-code: #1E1E1C;
-    --bg-hover: rgba(255, 255, 255, 0.04);
-    --bg-active: #1A2E22;
-    --text: #E8E8E3;
-    --text-secondary: #9C9C96;
-    --text-muted: #82827C; /* WCAG AA (4.5:1) against --bg-sidebar and --bg */
-    --accent: #4ADE80;
-    --accent-light: #1A2E22;
-    --accent-dim: #4ADE8018;
-    --border: #2A2A27;
-    --border-light: #232320;
-    --code-keyword: #A78BFA;
-    --code-string: #34D399;
-    --code-comment: #6B7280;
-    --code-func: #60A5FA;
-    --code-number: #FBBF24;
-    --progress-bar: #4ADE80;
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
-    --search-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236B6B66' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='M21 21l-4.35-4.35'/%3E%3C/svg%3E");
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: var(--dark-bg);
+    --bg-sidebar: var(--dark-bg-sidebar);
+    --bg-card: var(--dark-bg-card);
+    --bg-code: var(--dark-bg-code);
+    --bg-hover: var(--dark-bg-hover);
+    --bg-active: var(--dark-bg-active);
+    --text: var(--dark-text);
+    --text-secondary: var(--dark-text-secondary);
+    --text-muted: var(--dark-text-muted);
+    --accent: var(--dark-accent);
+    --accent-light: var(--dark-accent-light);
+    --accent-dim: var(--dark-accent-dim);
+    --border: var(--dark-border);
+    --border-light: var(--dark-border-light);
+    --code-keyword: var(--dark-code-keyword);
+    --code-string: var(--dark-code-string);
+    --code-comment: var(--dark-code-comment);
+    --code-func: var(--dark-code-func);
+    --code-number: var(--dark-code-number);
+    --progress-bar: var(--dark-progress-bar);
+    --shadow-md: var(--dark-shadow-md);
+    --search-icon: var(--dark-search-icon);
   }
+}
+
+/* Path 2: the reader explicitly chose dark. Wins over the OS in both
+   directions, since [data-theme="light"] is excluded from path 1. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+    --bg: var(--dark-bg);
+    --bg-sidebar: var(--dark-bg-sidebar);
+    --bg-card: var(--dark-bg-card);
+    --bg-code: var(--dark-bg-code);
+    --bg-hover: var(--dark-bg-hover);
+    --bg-active: var(--dark-bg-active);
+    --text: var(--dark-text);
+    --text-secondary: var(--dark-text-secondary);
+    --text-muted: var(--dark-text-muted);
+    --accent: var(--dark-accent);
+    --accent-light: var(--dark-accent-light);
+    --accent-dim: var(--dark-accent-dim);
+    --border: var(--dark-border);
+    --border-light: var(--dark-border-light);
+    --code-keyword: var(--dark-code-keyword);
+    --code-string: var(--dark-code-string);
+    --code-comment: var(--dark-code-comment);
+    --code-func: var(--dark-code-func);
+    --code-number: var(--dark-code-number);
+    --progress-bar: var(--dark-progress-bar);
+    --shadow-md: var(--dark-shadow-md);
+    --search-icon: var(--dark-search-icon);
 }
 
 * { box-sizing: border-box; }

@@ -6,6 +6,8 @@ Two features, built in order of the UX audit's ranked gaps:
    `docsify-search` plugin with a centered, keyboard-driven palette.
 2. **[Study Progress Tracking](#2--study-progress-tracking)** — per-section
    checkboxes, sidebar progress rings, and "continue where you left off".
+3. **[Theme Switcher](#3--theme-switcher)** — Light / System / Dark with
+   persistence and no flash of the wrong theme.
 
 **There is no new build step, no new dependency, and no config to set.** The
 site is still plain Docsify loaded from CDN — open `docs/index.html` through any
@@ -293,9 +295,87 @@ being loaded. If the tracker is absent, the Continue row simply never renders.
   38/38 rings on-screen in the open drawer, no horizontal scroll.
 
 > Testing note: CSS transitions do not advance under Chrome's
-> `--virtual-time-budget`, so computed `transform` / `background-color` can be
-> sampled mid-flight and look wrong. Measure end state with
-> `* { transition: none !important }` injected, or you will chase phantom bugs.
+> `--virtual-time-budget`, so computed `transform` / `background-color` /
+> `color` can be sampled mid-flight and look wrong. This produced three
+> separate phantom bugs during this work — a checkbox that looked unstyled, a
+> drawer that looked stuck shut, and an accent colour that looked like it did
+> not swap on theme change. Measure end state with
+> `* { transition: none !important }` injected, or you will chase them too.
+
+---
+
+# 3 — Theme Switcher
+
+The site was already fully themed in both modes, but followed
+`prefers-color-scheme` **only** — there was no way to read dark at noon, or
+light at night, without changing an OS setting.
+
+## What changed
+
+| Action | File | Notes |
+|---|---|---|
+| Added | `docs/theme-toggle.js` | Three-state control, persistence |
+| Added | `docs/theme-toggle.css` | Segmented control styling |
+| Modified | `docs/custom.css` | Token plumbing for `[data-theme]` |
+| Modified | `docs/command-palette.css` | Same, for its three palette-only tokens |
+| Modified | `docs/index.html` | Inline pre-paint script + two tags |
+
+## Usage
+
+A segmented **Light / System / Dark** control pinned to the bottom of the
+sidebar (`position: sticky`, so it stays reachable without scrolling past 38
+nav links). **System is the default** and simply removes `data-theme`, letting
+the media queries decide. Stored under `tsn.theme` in `localStorage`; choosing
+System removes the key rather than storing the string, so a reader who never
+touches the control and one who explicitly picks System end up identical.
+
+## Maintenance notes
+
+**The theme is applied by an inline script in `index.html`'s `<head>`, not by
+`theme-toggle.js`.** This is not optional: anything loaded via `<script src>`
+runs *after* the stylesheets have painted, which shows a flash of the wrong
+theme on every single page load. The storage key and accepted values are
+therefore duplicated between the inline script and `theme-toggle.js` — change
+one, change the other.
+
+**Tokens are declared once, mapped twice.** Dark values live as `--dark-*` on
+`:root`; two rules map them onto the real tokens, because a dark theme can be
+activated two ways and CSS cannot merge a media query with a plain selector:
+
+```css
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { … } }
+:root[data-theme="dark"] { … }
+```
+
+The `:not([data-theme="light"])` guard is what lets an explicit light choice
+beat a dark OS. Only the *mapping* is duplicated, so colours cannot drift.
+Adding a token means adding it to both mapping rules — in `custom.css`,
+`command-palette.css`, and `theme-toggle.css`, which all follow this pattern.
+
+**`color-scheme` is set alongside** so native scrollbars, form controls and the
+canvas behind the page match the chosen theme.
+
+**The selected segment uses its own `--theme-chip` token.** `--bg-card` reads
+well in light (a white pill on the off-white track) but collapses in dark,
+where `--bg-card` and `--bg-code` are both `#1E1E1C` — the chip would be
+invisible and selection would be signalled by icon colour alone, which is a
+WCAG 1.4.1 problem.
+
+**Real radio inputs**, three of them sharing a name, so arrow-key navigation,
+grouping and screen-reader semantics come from the browser.
+
+## Verification
+
+- **25/25 assertions pass under a light OS *and* 25/25 under a dark OS** — all
+  six combinations of OS preference × explicit choice. Default follows the OS;
+  explicit Dark beats a light OS; explicit Light beats a dark OS; System clears
+  the key and returns to the OS.
+- **Applied before paint** — after a reload the page is already the stored
+  theme, confirming the inline script beats the stylesheets.
+- **Tokens fully swap**: `--accent` `#2D7A50 ⇄ #4ADE80`, backgrounds, sidebar,
+  `color-scheme`, and the palette modal all follow.
+- **38/38 pages**, 372 checkboxes, 38 rings, exactly one switcher (no duplicate
+  injection across navigations), **0 console errors**.
 
 ---
 

@@ -11,26 +11,38 @@
    ========================================================================== */
 
 :root {
-  --cp-overlay: rgba(24, 24, 22, 0.42);
-  --cp-shadow: 0 16px 48px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.08);
   --cp-radius: 14px;
   --cp-width: 640px;
   --cp-speed: 150ms;
 
-  /* Secondary text inside the palette.
-     custom.css tunes --text-muted to 4.5:1 against --bg and --bg-sidebar, but
-     the modal sits on --bg-card, which is lighter in dark mode - reusing
-     --text-muted there measures 4.32:1 and fails WCAG AA. In light mode
-     --bg-card is white and --text-muted measures 5.13:1, so it is kept. */
+  /* ---- light ---- */
+  --cp-overlay: rgba(24, 24, 22, 0.42);
+  --cp-shadow: 0 16px 48px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.08);
+  /* Secondary text inside the palette. custom.css tunes --text-muted to 4.5:1
+     against --bg and --bg-sidebar, but the modal sits on --bg-card, which is
+     lighter in dark mode - reusing --text-muted there measures 4.32:1 and
+     fails WCAG AA. In light mode --bg-card is white and --text-muted measures
+     5.13:1, so it is inherited. */
   --cp-muted: var(--text-muted);
+
+  /* ---- dark values, applied by the two rules below ---- */
+  --dark-cp-overlay: rgba(0, 0, 0, 0.62);
+  --dark-cp-shadow: 0 16px 48px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.4);
+  --dark-cp-muted: #8B8B85;   /* 4.87:1 on --bg-card, 5.09:1 on --bg-sidebar */
 }
 
+/* Mirrors the two activation paths documented in custom.css. */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --cp-overlay: rgba(0, 0, 0, 0.62);
-    --cp-shadow: 0 16px 48px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.4);
-    --cp-muted: #8B8B85;   /* 4.87:1 on --bg-card, 5.09:1 on --bg-sidebar */
+  :root:not([data-theme="light"]) {
+    --cp-overlay: var(--dark-cp-overlay);
+    --cp-shadow: var(--dark-cp-shadow);
+    --cp-muted: var(--dark-cp-muted);
   }
+}
+:root[data-theme="dark"] {
+  --cp-overlay: var(--dark-cp-overlay);
+  --cp-shadow: var(--dark-cp-shadow);
+  --cp-muted: var(--dark-cp-muted);
 }
 
 /* Lock background scrolling while the palette is open. */
