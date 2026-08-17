@@ -530,6 +530,7 @@ body.close #reading-progress { left: 0; }
   width: 190px;
   max-height: calc(100vh - 80px);
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 #page-toc .toc-heading {
   font-size: 11px;
@@ -540,17 +541,47 @@ body.close #reading-progress { left: 0; }
   margin-bottom: 12px;
   padding-left: 16px;
 }
-#page-toc a {
+
+#page-toc .toc-list,
+#page-toc .toc-sub { list-style: none; margin: 0; padding: 0; }
+#page-toc li { margin: 0; }
+
+/* H3 rows are hidden until their section is the one being read. Empty groups
+   (an H2 with no subsections) simply have nothing to show. */
+#page-toc .toc-sub { display: none; }
+#page-toc .toc-item.is-open > .toc-sub { display: block; }
+
+#page-toc .toc-link {
   display: block;
   padding: 5px 0 5px 16px;
   font-size: 13px;
   color: var(--text-muted);
   text-decoration: none;
   border-left: 2px solid var(--border-light);
-  transition: all var(--transition);
+  transition: color var(--transition), border-color var(--transition);
 }
-#page-toc a:hover { color: var(--text-secondary); border-left-color: var(--text-muted); }
-#page-toc a.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+#page-toc .toc-link:hover { color: var(--text-secondary); border-left-color: var(--text-muted); }
+#page-toc .toc-link.active {
+  color: var(--accent);
+  border-left-color: var(--accent);
+  font-weight: 500;
+}
+#page-toc .toc-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Sub-rows sit further in and read quieter than their parent section. */
+#page-toc .toc-l3 {
+  padding-left: 26px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #page-toc .toc-link { transition: none !important; }
+}
 
 /* ---------- Wide-screen layout ----------
    Below 1200px the TOC is hidden and the article simply centres in the main

@@ -12,6 +12,8 @@ Two features, built in order of the UX audit's ranked gaps:
    "On this page" rail are laid out as one unit.
 5. **[Home page + sidebar](#5--home-page--sidebar)** — the index is scannable
    lists instead of dense tables, and sidebar labels fit on one line.
+6. **["On this page"](#6--on-this-page)** — covers H3s, with an accordion so the
+   biggest pages stay scannable.
 
 **There is no new build step, no new dependency, and no config to set.** The
 site is still plain Docsify loaded from CDN — open `docs/index.html` through any
@@ -581,6 +583,69 @@ by `nav.js` on route `/`. Do not style bare `.markdown-section li` for the index
 - Search still finds both note text (`usefect` → useEffect) and homepage text.
 - Sidebar header and footer stay fixed while the nav scrolls 0 → 3050px, on
   desktop and inside the mobile drawer.
+
+---
+
+# 6 — "On this page"
+
+## The problem
+
+The rail listed **H2s only**. Measured across the corpus that was **372 of
+1,098 sections** — and since every interview question is an H3, none of them
+were reachable from it:
+
+| Page | In the rail | Total sections |
+|---|--:|--:|
+| javascript-interview-bible | 39 | 163 |
+| angular-interview-questions | 22 | 115 |
+| dsa-interview-mastery-guide | 15 | 88 |
+| react-interview-mastery-guide | 10 | 55 |
+
+Under a fifth on the largest pages — exactly where a table of contents earns
+its keep.
+
+## The fix
+
+H3s are included, but not all at once: the JavaScript Bible alone has 163
+sections against a rail that was already at its 740px maximum with 39. H3s sit
+in a group that **opens only under the section being read**, so the rail shows
+about 40 rows instead of 163 while every section stays one click away.
+
+Clicking a row scrolls to it, `aria-current` tracks the active row, and the
+rail auto-scrolls to keep that row visible — by setting its own `scrollTop`
+rather than calling `scrollIntoView`, which would drag the page along with it.
+
+## The scroll handler was also a performance problem
+
+The previous implementation called `getBoundingClientRect()` on **every heading
+on every scroll event, unthrottled** — a forced layout per heading per event,
+which including H3s would have made three times worse. Offsets are now measured
+once, re-measured only when `document.documentElement.scrollHeight` changes
+(late-loading fonts and syntax highlighting shift the page), and the handler is
+throttled to one animation frame.
+
+## Mobile was already covered
+
+An earlier note in this document claimed mobile had no TOC. That was wrong:
+Docsify's `subMaxLevel: 3` renders the current page's H2 **and** H3 anchors into
+the sidebar, so the drawer already carries a full table of contents — 175
+section links on the JavaScript Bible. `#page-toc` is hidden below 1200px by
+design; the drawer is the mobile equivalent.
+
+## Verification
+
+- TOC rows exactly equal article sections on every page checked by direct DOM
+  dump: JavaScript Bible 39/124, DSA 15/73, Pub/Sub 8/7, Docker 11/0.
+- **38/38 pages** render, no TOC/article overlap, never more than one group
+  open, **0 console errors**.
+- Clicking H2 and H3 rows lands the heading at the top of the viewport
+  (`top=24`, the `scroll-margin-top`).
+
+> A second testing note to go with the transitions one: iframe-based harnesses
+> are unreliable under `--virtual-time-budget` — several runs reported an
+> entirely unrendered page, and one reported a TOC/section mismatch that was
+> just the previous page's rail measured mid-swap. Direct `--dump-dom` against
+> the real page was consistent every time. Prefer it.
 
 ---
 
