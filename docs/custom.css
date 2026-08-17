@@ -169,10 +169,43 @@ body { overflow-x: hidden; }
   width: var(--sidebar-width);
   background: var(--bg-sidebar);
   border-right: 1px solid var(--border);
-  overflow-y: auto;
+  /* Column layout so the header (logo + search) and the footer (theme
+     switcher) stay put while only the note list scrolls. The whole sidebar
+     used to be the scroll container, so after a few notes the search box -
+     the primary way to reach any of 1,152 sections - scrolled out of reach. */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   padding: 0;
   z-index: 10;
   transition: transform var(--transition);
+}
+
+/* Pinned blocks: header above the list, switcher below it.
+   NOTE the flex item is `.app-name` - Docsify wraps the title in that div and
+   `.app-name-link` is the <a> nested inside it, so targeting the link alone
+   would leave the actual flex child free to shrink. */
+.app-name,
+.cp-trigger-wrap,
+.pt-overall,
+.theme-switch-wrap { flex: 0 0 auto; }
+
+/* The only scrolling region.
+   `min-height: 0` is required, not cosmetic: flex items default to
+   min-height:auto, which refuses to shrink below their content height - the
+   list would push the footer off-screen instead of scrolling. */
+.sidebar-nav {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* On short viewports the pinned header would eat too much of the list, so it
+   tightens up. */
+@media screen and (max-height: 700px) {
+  .app-name-link { padding: 14px 20px 12px; margin-bottom: 4px; }
+  .cp-trigger-wrap { padding-bottom: 10px; margin-bottom: 4px; }
 }
 
 .content {

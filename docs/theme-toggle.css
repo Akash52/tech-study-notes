@@ -4,8 +4,8 @@
    Styles for theme-toggle.js. The token plumbing that makes light/dark
    switchable lives in custom.css - this file only styles the control.
 
-   The control is pinned to the bottom of the sidebar with `position: sticky`
-   so it stays reachable without scrolling past 38 nav links.
+   The control sits in the sidebar's flex footer (see .sidebar in custom.css),
+   so it stays put while the note list scrolls.
    ========================================================================== */
 
 /* The selected segment needs its own colour. --bg-card works in light (a white
@@ -23,11 +23,7 @@
 :root[data-theme="dark"] { --theme-chip: var(--dark-theme-chip); }
 
 .theme-switch-wrap {
-  position: sticky;
-  bottom: 0;
-  z-index: 1;
   padding: 10px 16px 14px;
-  /* Opaque, because nav links scroll underneath it. */
   background: var(--bg-sidebar);
   border-top: 1px solid var(--border-light);
 }

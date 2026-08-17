@@ -486,6 +486,35 @@ Mark all complete" for what is only a table of contents.
 | Homepage table rows | 33 | **0** |
 | Notes counted for progress | 38 (incl. index) | **37** |
 
+## Sidebar is a flex column, not a scroll box
+
+`.sidebar` used to be the scroll container (`overflow-y: auto`), so the logo,
+the search trigger and the progress line all scrolled away once you were a few
+notes into a 38-item list — losing the fastest route to any of 1,152 sections
+exactly when you were deepest in the nav.
+
+It is now `display: flex; flex-direction: column; overflow: hidden`, with
+`.sidebar-nav` as the only scrolling region:
+
+```
+.app-name          flex: 0 0 auto     pinned header
+.cp-trigger-wrap   flex: 0 0 auto
+.pt-overall        flex: 0 0 auto
+.sidebar-nav       flex: 1 1 auto     the only scroller
+.theme-switch-wrap flex: 0 0 auto     pinned footer
+```
+
+Two things to know if you touch this:
+
+- **`min-height: 0` on `.sidebar-nav` is required, not cosmetic.** Flex items
+  default to `min-height: auto`, which refuses to shrink below content height —
+  the list would push the footer off-screen instead of scrolling.
+- **The flex item is `.app-name`, not `.app-name-link`.** Docsify wraps the
+  title in a `.app-name` div; targeting the inner `<a>` leaves the actual flex
+  child free to shrink.
+
+The theme switcher no longer needs `position: sticky` — it is a flex footer now.
+
 ## Maintenance notes
 
 **Sidebar labels are shortened for DISPLAY ONLY.** `_sidebar.md` is regenerated
@@ -516,6 +545,8 @@ by `nav.js` on route `/`. Do not style bare `.markdown-section li` for the index
 - All **37 notes are linked** from the rewritten index and every link resolves.
 - Descriptions pass WCAG AA in both themes (5.12:1 light, 6.68:1 dark).
 - Search still finds both note text (`usefect` → useEffect) and homepage text.
+- Sidebar header and footer stay fixed while the nav scrolls 0 → 3050px, on
+  desktop and inside the mobile drawer.
 
 ---
 
