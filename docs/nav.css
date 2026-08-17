@@ -1,0 +1,167 @@
+/* ==========================================================================
+   Navigation + home page presentation
+   --------------------------------------------------------------------------
+   Companion to nav.js. Colours resolve through the tokens in custom.css, so
+   both themes are inherited.
+   ========================================================================== */
+
+/* ---------- Sidebar: series number ---------- */
+
+.sidebar-nav .nav-num {
+  display: inline-block;
+  width: 16px;
+  margin-right: 8px;
+  color: var(--text-muted);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.sidebar-nav li.active > a .nav-num,
+.sidebar-nav li > p.active > a .nav-num { color: var(--accent); }
+
+/* Labels are short enough to sit on one line now, so the rhythm can tighten. */
+.sidebar-nav li > a,
+.sidebar-nav li > p > a { line-height: 1.45; }
+
+/* ---------- Sidebar: in-page anchors ----------
+   `.app-sub-sidebar` holds the H2/H3 anchors of the page you are currently
+   reading. They previously looked almost identical to note links, which was
+   actively confusing on the index page: "Backend Engineering" appeared twice
+   in the sidebar - once as a heading anchor and once as a real category. A
+   vertical rail and a smaller size mark them as "inside this page". */
+.sidebar-nav .app-sub-sidebar {
+  margin: 2px 0 8px 24px;
+  padding-left: 0;
+  border-left: 1.5px solid var(--border);
+}
+.sidebar-nav .app-sub-sidebar a {
+  padding: 5px 10px 5px 12px;
+  font-size: 12.5px;
+  border-radius: 0 7px 7px 0;
+  line-height: 1.4;
+}
+.sidebar-nav .app-sub-sidebar a.active {
+  background: var(--bg-active);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+/* ==========================================================================
+   Home page
+   --------------------------------------------------------------------------
+   The index was three dense markdown tables (33 rows). Long note titles were
+   squeezed into a narrow "Note" column and wrapped badly, while the "Topics"
+   column was an unreadable comma list. It is now plain lists, styled as rows:
+   title first, description muted beside it.
+   ========================================================================== */
+
+/* "New here?" callout */
+.markdown-section.is-home > blockquote {
+  margin: 22px 0 34px;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+.markdown-section.is-home > blockquote p { margin: 0; font-size: 14px; }
+.markdown-section.is-home > blockquote p + p { margin-top: 6px; }
+.markdown-section.is-home > blockquote kbd {
+  font-family: inherit;
+  font-size: 11.5px;
+  padding: 2px 6px;
+  color: var(--text);
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+}
+
+/* Section headings + the italic count line under them */
+.markdown-section.is-home h2 {
+  margin: 40px 0 4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-light);
+}
+.markdown-section.is-home h2 + p em,
+.markdown-section.is-home > p > em:only-child {
+  display: block;
+  margin: -2px 0 6px;
+  font-style: normal;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+/* Rows */
+.markdown-section.is-home ul,
+.markdown-section.is-home ol {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+}
+.markdown-section.is-home li {
+  position: relative;
+  margin: 0;
+  padding: 10px 4px 10px 0;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 14px;
+  line-height: 1.6;
+  /* The text after the link is the description, so the row's own colour
+     applies to it and only the link overrides it. --text-secondary rather than
+     --text-muted: these descriptions are the main way to choose a note, so
+     they need to be comfortably readable, not just legible. */
+  color: var(--text-secondary);
+}
+.markdown-section.is-home li:last-child { border-bottom: none; }
+
+.markdown-section.is-home li > a {
+  font-weight: 550;
+  color: var(--text);
+  text-decoration: none;
+}
+.markdown-section.is-home li > a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+.markdown-section.is-home li code {
+  font-size: 0.86em;
+  color: var(--text-secondary);
+}
+
+/* Numbered series: the number becomes a quiet marker in the gutter. */
+.markdown-section.is-home ol { counter-reset: note-step; }
+.markdown-section.is-home ol > li {
+  counter-increment: note-step;
+  padding-left: 34px;
+}
+.markdown-section.is-home ol > li::before {
+  content: counter(note-step);
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 22px;
+  text-align: right;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+}
+.markdown-section.is-home ol > li:hover::before { color: var(--accent); }
+
+/* Rows are the primary target on the index, so give them a hover surface. */
+@media (hover: hover) and (pointer: fine) {
+  .markdown-section.is-home li {
+    border-radius: 7px;
+    transition: background-color var(--transition);
+  }
+  .markdown-section.is-home li:hover { background: var(--bg-hover); }
+  .markdown-section.is-home ol > li:hover { padding-left: 34px; }
+}
+
+@media screen and (max-width: 768px) {
+  .markdown-section.is-home li { padding-top: 12px; padding-bottom: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .markdown-section.is-home li { transition: none !important; }
+}

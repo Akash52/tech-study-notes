@@ -129,7 +129,14 @@
 
   var currentRoute = '/';
 
+  /* The index page is a table of contents, not study material. Offering
+     "0 / 6 sections complete - Mark all complete" for a list of links reads as
+     a bug, so the index is excluded from tracking entirely: no checkboxes, no
+     bulk bar, no ring, and it is not counted among the notes. */
+  function isIndex(route) { return route === '/' || route === ''; }
+
   function injectCheckboxes(route) {
+    if (isIndex(route)) return 0;
     var section = document.querySelector('.markdown-section');
     if (!section) return 0;
     var headings = section.querySelectorAll('h2');
@@ -186,6 +193,7 @@
    * ------------------------------------------------------------------ */
 
   function injectBulkControls(route, total) {
+    if (isIndex(route)) return;
     var section = document.querySelector('.markdown-section');
     if (!section || !total) return;
     if (section.querySelector('.pt-bulk')) return;
@@ -284,7 +292,7 @@
     Array.prototype.forEach.call(links, function (a) {
       if (a.closest('.app-sub-sidebar')) return;
       var route = hrefToRoute(a.getAttribute('href'));
-      if (!route) return;
+      if (!route || isIndex(route)) return;
 
       var e = entryFor(route);
       var existing = a.querySelector('.pt-ring-wrap');
@@ -302,7 +310,7 @@
       Array.prototype.forEach.call(pages, function (a) {
         if (a.closest('.app-sub-sidebar')) return;
         var route = hrefToRoute(a.getAttribute('href'));
-        if (!route) return;
+        if (!route || isIndex(route)) return;
         total++;
         var e = entryFor(route);
         if (e.total > 0 && e.done >= e.total) done++;
@@ -333,7 +341,7 @@
     Array.prototype.forEach.call(nav.querySelectorAll('a:not(.section-link)'), function (a) {
       if (a.closest('.app-sub-sidebar')) return;
       var route = hrefToRoute(a.getAttribute('href'));
-      if (!route || seen[route]) return;
+      if (!route || isIndex(route) || seen[route]) return;
       seen[route] = true;
       total++;
       var e = entryFor(route);

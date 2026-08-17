@@ -10,6 +10,8 @@ Two features, built in order of the UX audit's ranked gaps:
    persistence and no flash of the wrong theme.
 4. **[Wide-screen layout](#4--wide-screen-layout)** — the article and its
    "On this page" rail are laid out as one unit.
+5. **[Home page + sidebar](#5--home-page--sidebar)** — the index is scannable
+   lists instead of dense tables, and sidebar labels fit on one line.
 
 **There is no new build step, no new dependency, and no config to set.** The
 site is still plain Docsify loaded from CDN — open `docs/index.html` through any
@@ -441,6 +443,79 @@ is collapsed.
   article.
 - **38/38 pages** at both 1440px and 1857px: no TOC/article overlap anywhere,
   no horizontal scroll, 0 console errors, all other features intact.
+
+---
+
+# 5 — Home page + sidebar
+
+## The problems
+
+**The index was three markdown tables, 33 rows.** Long note titles were squeezed
+into a narrow "Note" column and wrapped badly, while the "Topics" column was an
+unreadable comma list. Nothing indicated where to start or that Backend
+Engineering was a sequence.
+
+**35 of 38 sidebar labels were over 28 characters**, so nearly every entry
+wrapped onto two or three lines. 26 of them carried pure boilerplate:
+`— Lecture Breakdown` (×12), `Interview Mastery Guide` (×6), `— Quick Notes`
+(×4), `— Full Breakdown` (×2). The longest was 69 characters.
+
+**The sidebar showed the same name twice meaning different things.** On the
+index, `.app-sub-sidebar` renders the current page's H2 anchors — so "Backend
+Engineering" appeared once as a heading anchor and again as a real category,
+styled almost identically.
+
+**Progress tracking ran on the index**, offering "0 / 6 sections complete —
+Mark all complete" for what is only a table of contents.
+
+## What changed
+
+| Action | File | Notes |
+|---|---|---|
+| Rewritten | `docs/README.md` | Tables → lists with descriptions; "New here?" callout; ordered series |
+| Added | `docs/nav.js` | Sidebar label shortening, series numbers, home marker class |
+| Added | `docs/nav.css` | Home presentation + sidebar refinements |
+| Modified | `docs/progress-tracker.js` | Index excluded from tracking |
+| Modified | `docs/index.html` | Two tags |
+
+## Results
+
+| | Before | After |
+|---|--:|--:|
+| Sidebar links fitting one line | 3 / 38 | **37 / 38** |
+| Homepage table rows | 33 | **0** |
+| Notes counted for progress | 38 (incl. index) | **37** |
+
+## Maintenance notes
+
+**Sidebar labels are shortened for DISPLAY ONLY.** `_sidebar.md` is regenerated
+by CI from each note's H1, so editing it would be overwritten — and editing the
+H1s would change the page titles and the search index. `nav.js` rewrites the
+rendered link text instead, keeps the full title in the `title` attribute, and
+leaves everything else untouched. Rules are a list of regex suffix trims plus a
+small explicit rename map keyed by the post-trim string.
+
+**Series numbers come from the filename**, not a hardcoded list:
+`04_Short_Polling` → "4". Add a numbered file and it is picked up automatically.
+
+**`nav.js` preserves the progress ring** when it rewrites a link's innerHTML.
+The two modules touch the same element from different `doneEach` hooks, in
+either order, so each has to tolerate the other having run first.
+
+**Home-only styles are scoped to `.markdown-section.is-home`**, a class applied
+by `nav.js` on route `/`. Do not style bare `.markdown-section li` for the index
+— it would hit every note page.
+
+## Verification
+
+- **38/38 pages** render, **0 console errors**, no TOC overlap.
+- Index has **0 checkboxes** and no bulk bar; note pages keep exact H2-to-checkbox
+  parity (**366** checkboxes = 372 − the index's 6).
+- Sidebar shows **37 rings** and the overall line reads **0 / 37** — the index is
+  no longer counted as a note.
+- All **37 notes are linked** from the rewritten index and every link resolves.
+- Descriptions pass WCAG AA in both themes (5.12:1 light, 6.68:1 dark).
+- Search still finds both note text (`usefect` → useEffect) and homepage text.
 
 ---
 
