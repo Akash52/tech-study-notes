@@ -20,6 +20,14 @@
 
       if (contentObscured) main.setAttribute('inert', '');
       else main.removeAttribute('inert');
+
+      // The toggle renders as a hamburger or an X depending on state, so its
+      // accessible name has to follow.
+      var toggle = document.querySelector('.sidebar-toggle');
+      if (toggle) {
+        toggle.setAttribute('aria-expanded', sidebarHidden ? 'false' : 'true');
+        toggle.setAttribute('aria-label', sidebarHidden ? 'Open navigation' : 'Close navigation');
+      }
     }
 
     new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] });

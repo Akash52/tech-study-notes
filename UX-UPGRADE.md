@@ -80,6 +80,12 @@ There is also a **`Search… ⌘K` button in the sidebar** (occupying the slot t
 old search box used to fill) and a **fixed search button beside the hamburger**
 on viewports under 768px, and on desktop whenever the sidebar is collapsed.
 
+On mobile that floating button is hidden while the drawer is open — the drawer
+carries its own pinned search field, so the button would be both redundant and
+sitting on top of it. The hamburger becomes an X at the same time, so there is
+one obvious way out rather than a menu icon that has already done its job.
+`aria-expanded` and the accessible name follow the state.
+
 ---
 
 ## How it works

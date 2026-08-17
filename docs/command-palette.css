@@ -351,10 +351,16 @@ body.cp-open { overflow: hidden; }
 
 /* Visible on mobile, and on desktop whenever the sidebar is collapsed
    (which also hides the sidebar trigger). */
+/* Desktop: shown only when the sidebar is collapsed, since the sidebar's own
+   search trigger is then hidden too. */
 body.close .cp-mobile-trigger { display: flex; }
+
 @media screen and (max-width: 768px) {
-  .cp-mobile-trigger,
-  body.close .cp-mobile-trigger { display: flex; }
+  .cp-mobile-trigger { display: flex; }
+  /* Drawer open (body.close on mobile - see custom.js): the drawer carries its
+     own pinned search field, so this button would be both redundant and
+     sitting on top of it. */
+  body.close .cp-mobile-trigger { display: none; }
 }
 
 /* ---------- Mobile layout ---------- */

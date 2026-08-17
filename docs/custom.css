@@ -253,6 +253,22 @@ body.close .sidebar-toggle { left: 14px; }
   /* Must come after the base rules above: same specificity, so source order decides. */
   .sidebar-toggle,
   body.close .sidebar-toggle { left: 14px; }
+
+  /* With the drawer open the hamburger becomes a close button, so there is one
+     obvious way out instead of a menu icon that is already "done". Remember the
+     inversion documented in custom.js: on mobile `body.close` means the drawer
+     is OPEN.
+
+     The bars are 2px tall with 3px gaps, so their centres sit 5px either side
+     of the middle one - that is where the 5px offsets come from. */
+  .sidebar-toggle span { transition: transform var(--transition), opacity var(--transition); }
+  body.close .sidebar-toggle span:nth-child(1) { transform: translateY(5px) rotate(45deg); }
+  body.close .sidebar-toggle span:nth-child(2) { opacity: 0; }
+  body.close .sidebar-toggle span:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-toggle span { transition: none !important; }
 }
 .sidebar-toggle-button {
   display: flex;
