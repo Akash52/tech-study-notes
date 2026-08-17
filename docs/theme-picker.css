@@ -1,0 +1,164 @@
+/* ==========================================================================
+   Theme picker
+   --------------------------------------------------------------------------
+   Styles for theme-picker.js. Sits in the sidebar's flex footer (see
+   `.sidebar` in custom.css) so it stays put while the note list scrolls.
+
+   Swatch colours are inlined from the palette data, so they show each theme's
+   real colours rather than the current one's.
+   ========================================================================== */
+
+.theme-switch-wrap {
+  padding: 10px 14px 14px;
+  background: var(--bg-sidebar);
+  border-top: 1px solid var(--border-light);
+}
+
+.theme-picker { position: relative; }
+
+/* ---------- Trigger ---------- */
+.theme-trigger {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 38px;
+  padding: 7px 10px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--transition), color var(--transition);
+}
+.theme-trigger:hover { border-color: var(--text-muted); color: var(--text); }
+.theme-trigger:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+.theme-trigger-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+.theme-chevron {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+  color: var(--text-muted);
+  transition: transform var(--transition);
+}
+.theme-trigger[aria-expanded="true"] .theme-chevron { transform: rotate(180deg); }
+
+/* ---------- Swatch ---------- */
+.theme-swatch {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.theme-swatch i { display: block; }
+/* "System" has no palette of its own, so it gets a split light/dark chip. */
+.theme-swatch-system {
+  display: block;
+  background: linear-gradient(135deg, #FAFAF7 0 50%, #141413 50% 100%);
+}
+
+/* ---------- Menu ----------
+   Opens upward: the trigger is pinned to the bottom of the sidebar, so there
+   is never room below it. */
+.theme-menu {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 60;
+  max-height: min(58vh, 380px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 5px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  box-shadow: var(--cp-shadow);
+}
+.theme-menu[hidden] { display: none; }
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: none;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.theme-option:hover { background: var(--bg-hover); }
+.theme-option.is-on {
+  background: var(--bg-active);
+  border-color: var(--accent-dim);
+}
+.theme-option:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.theme-option-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+.theme-option-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.theme-option-blurb {
+  font-size: 11.5px;
+  color: var(--cp-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.theme-option.is-on .theme-option-name { color: var(--accent); }
+
+.theme-tick {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  color: var(--accent);
+  opacity: 0;
+}
+.theme-option.is-on .theme-tick { opacity: 1; }
+
+/* ---------- Touch ---------- */
+@media (hover: none), (pointer: coarse) {
+  .theme-trigger { min-height: 44px; }
+  .theme-option { padding: 10px 8px; min-height: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-trigger,
+  .theme-chevron { transition: none !important; }
+}

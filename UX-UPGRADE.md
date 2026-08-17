@@ -6,8 +6,8 @@ Two features, built in order of the UX audit's ranked gaps:
    `docsify-search` plugin with a centered, keyboard-driven palette.
 2. **[Study Progress Tracking](#2--study-progress-tracking)** — per-section
    checkboxes, sidebar progress rings, and "continue where you left off".
-3. **[Theme Switcher](#3--theme-switcher)** — Light / System / Dark with
-   persistence and no flash of the wrong theme.
+3. **[Reading themes](#3--reading-themes)** — System plus 10 curated palettes,
+   contrast-enforced, with no flash of the wrong theme.
 4. **[Wide-screen layout](#4--wide-screen-layout)** — the article and its
    "On this page" rail are laid out as one unit.
 5. **[Home page + sidebar](#5--home-page--sidebar)** — the index is scannable
@@ -308,30 +308,64 @@ being loaded. If the tracker is absent, the Continue row simply never renders.
 
 ---
 
-# 3 — Theme Switcher
+# 3 — Reading themes
 
-The site was already fully themed in both modes, but followed
-`prefers-color-scheme` **only** — there was no way to read dark at noon, or
-light at night, without changing an OS setting.
+The site followed `prefers-color-scheme` **only** — no way to read dark at
+noon, light at night, or in a palette that suits your eyes.
 
 ## What changed
 
 | Action | File | Notes |
 |---|---|---|
-| Added | `docs/theme-toggle.js` | Three-state control, persistence |
-| Added | `docs/theme-toggle.css` | Segmented control styling |
+| Added | `docs/themes.js` | Palette data, token derivation, persistence, pre-paint apply |
+| Added | `docs/theme-picker.js` | The picker UI |
+| Added | `docs/theme-picker.css` | Picker styling |
 | Modified | `docs/custom.css` | Token plumbing for `[data-theme]` |
-| Modified | `docs/command-palette.css` | Same, for its three palette-only tokens |
-| Modified | `docs/index.html` | Inline pre-paint script + two tags |
+| Modified | `docs/command-palette.css` | Same, for its palette-only tokens |
+| Modified | `docs/index.html` | `themes.js` in `<head>` + two tags |
 
 ## Usage
 
-A segmented **Light / System / Dark** control pinned to the bottom of the
-sidebar (`position: sticky`, so it stays reachable without scrolling past 38
-nav links). **System is the default** and simply removes `data-theme`, letting
-the media queries decide. Stored under `tsn.theme` in `localStorage`; choosing
-System removes the key rather than storing the string, so a reader who never
-touches the control and one who explicitly picks System end up identical.
+A picker in the sidebar footer: **System** plus **10 curated reading palettes** —
+Daylight, Midnight, Sepia, Solarized Light, Solarized Dark, Nord, Gruvbox,
+Dracula, Tokyo Night and High Contrast. Each option shows a four-colour swatch
+(page, surface, accent, text) and a one-line blurb. Arrows move, Enter chooses,
+Escape closes, clicking outside dismisses.
+
+**System is the default**: it removes every override and lets the media queries
+decide, which is also what a reader with JavaScript disabled gets. Stored under
+`tsn.theme`; picking System removes the key. The previous three-state values
+(`light` / `dark`) still resolve, to Daylight and Midnight.
+
+## Adding a theme
+
+Add one object to `PALETTES` in `themes.js`. Nothing else changes — the picker,
+persistence and pre-paint path all pick it up:
+
+```js
+{ id: 'my-theme', name: 'My Theme', blurb: 'Short description',
+  mode: 'dark',
+  bg: '#101014', sidebar: '#0C0C10', card: '#191921', code: '#191921',
+  text: '#E6E6EE', accent: '#7FD1B9', border: '#2A2A34',
+  syntax: { keyword: '…', string: '…', comment: '…', func: '…', number: '…' } }
+```
+
+Seven colours carry the identity; `derive()` expands them into the ~26 custom
+properties the stylesheets consume.
+
+## Contrast is enforced, not trusted
+
+Secondary text, muted text, the accent and every syntax colour are pushed away
+from their background in 5% steps until they clear **4.5:1** against every
+surface they can appear on. A palette therefore cannot introduce an
+accessibility regression however it is authored.
+
+This is not theoretical. The canonical editor palettes were tuned for
+highlighting rather than WCAG, and **15 of their published syntax colours
+measured below 4.5:1** on their own code background — Solarized Light's string
+green at 2.63:1, Solarized Dark's magenta at 2.86:1, Nord's purple at 3.79:1.
+Enforcement shifts them slightly from the original hex, which is the right
+trade: a theme that is faithful but unreadable is not worth shipping.
 
 ## Maintenance notes
 
@@ -370,16 +404,16 @@ grouping and screen-reader semantics come from the browser.
 
 ## Verification
 
-- **25/25 assertions pass under a light OS *and* 25/25 under a dark OS** — all
-  six combinations of OS preference × explicit choice. Default follows the OS;
-  explicit Dark beats a light OS; explicit Light beats a dark OS; System clears
-  the key and returns to the OS.
-- **Applied before paint** — after a reload the page is already the stored
-  theme, confirming the inline script beats the stylesheets.
-- **Tokens fully swap**: `--accent` `#2D7A50 ⇄ #4ADE80`, backgrounds, sidebar,
-  `color-scheme`, and the palette modal all follow.
-- **38/38 pages**, 372 checkboxes, 38 rings, exactly one switcher (no duplicate
-  injection across navigations), **0 console errors**.
+- **All 10 themes pass WCAG AA** on all 10 text roles — body, secondary, muted,
+  palette-muted, accent and the five syntax colours. Worst measured ratio across
+  the whole set is 4.50:1.
+- **17/17 browser assertions**: every theme applies and sets its mode; the
+  choice survives a reload and is already painted at load; System clears the
+  attribute, the inline tokens and the storage key; legacy `dark` maps to
+  Midnight; listbox semantics, arrow keys and Escape all work.
+- **38/38 pages** sweep cleanly *under a custom theme* with no TOC overlap,
+  one picker, the sidebar header still pinned, search still working, and
+  **0 console errors**.
 
 ---
 
