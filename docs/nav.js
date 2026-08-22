@@ -35,6 +35,10 @@
     / Interview Mastery Guide$/,
     / Interview Questions and Answers$/,
     /:\s*Your Practical Guide.*$/,
+    /* Some notes carry their series number in the H1 ("01 — The SELECT
+       Statement"). The number is rendered separately as a prefix, so keeping it
+       in the label too would read "1 01 — The SELECT Statement". */
+    /^\d+[a-z]?\s*[—–-]\s*/,
     / — "Smoosh Mode"$/,
     / — “Smoosh Mode”$/
   ];
@@ -69,12 +73,12 @@
     return RENAME[out] || out;
   }
 
-  /** `#/backend-engineering/04_Short_Polling` -> "4". Empty when unnumbered. */
+  /** `04_Short_Polling` -> "4", `04b_WHERE_part2` -> "4b". Empty if unnumbered. */
   function seriesNumber(href) {
     if (!href) return '';
     var file = href.split('/').pop() || '';
-    var m = file.match(/^(\d+)[_-]/);
-    return m ? String(parseInt(m[1], 10)) : '';
+    var m = file.match(/^(\d+)([a-z]?)[_-]/);
+    return m ? String(parseInt(m[1], 10)) + m[2] : '';
   }
 
   function esc(s) {

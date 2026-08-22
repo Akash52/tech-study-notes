@@ -17,6 +17,11 @@ jobs:
 
       - name: Generate sidebar
         run: |
+          # Byte-order sorting, so the generated order does not depend on the
+          # runner's locale. It matters: with a locale-aware collation the
+          # underscore is ignored and "04b_WHERE_part2" sorts BEFORE
+          # "04_WHERE_part1", putting Part 2 above Part 1 in the sidebar.
+          export LC_ALL=C
           cd docs
 
           title_from_first_line() {

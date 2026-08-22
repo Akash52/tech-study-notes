@@ -27,6 +27,23 @@
 - **Cheatsheets**
   - [Docker Cheatsheet — For Everyday Use](cheatsheets/docker-cheatsheet)
 
+- **Database**
+  - **SQL**
+    - [01 — The SELECT Statement](database/SQL/01_SELECT_statement)
+    - [02 — SELECT DISTINCT](database/SQL/02_SELECT_DISTINCT)
+    - [03 — COUNT](database/SQL/03_COUNT)
+    - [04 — WHERE (Part 1: Syntax)](database/SQL/04_WHERE_part1_syntax)
+    - [04b — WHERE (Part 2: Applied)](database/SQL/04b_WHERE_part2_examples)
+    - [05 — ORDER BY](database/SQL/05_ORDER_BY)
+    - [06 — LIMIT](database/SQL/06_LIMIT)
+    - [07 — BETWEEN](database/SQL/07_BETWEEN)
+    - [08 — IN](database/SQL/08_IN)
+    - [09 — LIKE & ILIKE (Pattern Matching)](database/SQL/09_LIKE_ILIKE)
+    - [10 — Aggregate Functions](database/SQL/10_aggregate_functions)
+    - [11 — GROUP BY (Part 1: Theory)](database/SQL/11_GROUP_BY_part1_theory)
+    - [11b — GROUP BY (Part 2: Applied)](database/SQL/11b_GROUP_BY_part2_applied)
+    - [12 — HAVING](database/SQL/12_HAVING)
+
 - **Interview Prep**
   - [Angular Interview Questions and Answers](interview-prep/angular-interview-questions)
   - [Design Patterns Interview Mastery Guide](interview-prep/design-patterns-interview-mastery-guide)

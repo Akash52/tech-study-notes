@@ -29,6 +29,25 @@ Plain-language notes on things worth understanding properly — one topic at a t
 5. [TLS](backend-engineering/Protocol/05_TLS.md) — handshake, certificates, encryption in transit
 6. [Internet Protocol](backend-engineering/Protocol/internet_protocol.md) — IP addressing, subnetting, TTL, ICMP
 
+## Database
+
+*SQL from the ground up — 14 notes, best read in order. Examples run against the DVD Rental sample database.*
+
+1. [SELECT](database/SQL/01_SELECT_statement.md) — reading data out of a table, the most-used statement in SQL
+2. [SELECT DISTINCT](database/SQL/02_SELECT_DISTINCT.md) — stripping duplicates to get only the unique values
+3. [COUNT](database/SQL/03_COUNT.md) — how many rows come back, and `COUNT(*)` vs `COUNT(column)`
+4. [WHERE — syntax](database/SQL/04_WHERE_part1_syntax.md) — filtering rows, the comparison operators, the gotchas
+5. [WHERE — applied](database/SQL/04b_WHERE_part2_examples.md) — building a query condition by condition, and the `OR` mistake everyone makes
+6. [ORDER BY](database/SQL/05_ORDER_BY.md) — sorting results, including by multiple columns
+7. [LIMIT](database/SQL/06_LIMIT.md) — capping rows, and `ORDER BY` + `LIMIT` as the "top N" pattern
+8. [BETWEEN](database/SQL/07_BETWEEN.md) — inclusive ranges, and the timestamp trap that bites everyone
+9. [IN](database/SQL/08_IN.md) — matching any item in a list, and the `NOT IN` + `NULL` trap
+10. [LIKE & ILIKE](database/SQL/09_LIKE_ILIKE.md) — wildcard pattern matching and case sensitivity
+11. [Aggregate Functions](database/SQL/10_aggregate_functions.md) — many rows in, one value out, and why `GROUP BY` has to exist
+12. [GROUP BY — theory](database/SQL/11_GROUP_BY_part1_theory.md) — split/apply/combine, the golden rule, and execution order
+13. [GROUP BY — applied](database/SQL/11b_GROUP_BY_part2_applied.md) — real queries on the `payment` table; read every one with the word "per"
+14. [HAVING](database/SQL/12_HAVING.md) — filtering groups after aggregation, a `WHERE` for aggregate results
+
 ## Interview Prep
 
 *Question-and-answer guides — 8 notes. Dip in by topic.*
