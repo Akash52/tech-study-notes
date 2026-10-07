@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="theme-picker.css">
   <link rel="stylesheet" href="nav.css">
   <link rel="stylesheet" href="layout.css">
+  <link rel="stylesheet" href="reader.css">
 </head>
 <body>
   <div id="app"></div>
@@ -35,6 +36,10 @@
       loadSidebar: '_sidebar.md',
       subMaxLevel: 3,
       auto2top: true,
+      // Space above a heading after jumping to it. Without it the heading
+      // landed flush against the window edge, and 17px under the corner
+      // buttons when the sidebar was collapsed.
+      topMargin: 72,
       coverpage: false,
       pagination: {
         previousText: '← Previous',
@@ -59,6 +64,8 @@
   <script src="theme-picker.js"></script>
   <!-- Reading-layout panel, beside the theme switcher -->
   <script src="layout-picker.js"></script>
+  <!-- E-reader behaviours: resume position, time left, sidebar follows, arrow keys -->
+  <script src="reader.js"></script>
   <!-- Sidebar labels + home page presentation -->
   <script src="nav.js"></script>
 

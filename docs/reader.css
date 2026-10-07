@@ -1,0 +1,139 @@
+/* ==========================================================================
+   E-reader behaviours (reader.js), plus print.
+   Colours come from the theme tokens, so both work in every theme.
+   ========================================================================== */
+
+/* ---------- "N min left in this note" ----------
+   Kindle's chapter-time readout: small, quiet, out of the text's way. */
+.reader-time {
+  position: fixed;
+  right: 16px;
+  bottom: 14px;
+  z-index: 20;
+  padding: 3px 10px;
+  border: 1px solid var(--border-light);
+  border-radius: 999px;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.6;
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+}
+.reader-time[hidden] { display: none; }
+
+/* ---------- "Resumed at ..." ---------- */
+.reader-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: min(560px, calc(100vw - 32px));
+  padding: 10px 12px 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-card);
+  box-shadow: var(--cp-shadow, var(--shadow-md));
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  line-height: 1.4;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 12px);
+  transition: opacity var(--transition), transform var(--transition), visibility 0s linear 200ms;
+}
+.reader-toast.is-on {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+  transition: opacity var(--transition), transform var(--transition);
+}
+.reader-toast > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.reader-toast strong { color: var(--text); font-weight: 600; }
+.reader-toast-top {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--accent);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.reader-toast-top:hover { border-color: var(--accent-dim); background: var(--bg-active); }
+.reader-toast-top:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@media screen and (max-width: 768px) {
+  .reader-time { right: 10px; bottom: 10px; font-size: 11px; }
+  .reader-toast { bottom: 16px; font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reader-toast, .reader-toast.is-on { transition: none !important; }
+}
+
+/* ==========================================================================
+   Print
+   --------------------------------------------------------------------------
+   Printing (or "Save as PDF") used to include the sidebar, the floating
+   buttons and the GitHub ribbon. Now it is the note alone, full width, black
+   on white whatever theme is on screen, with code wrapped instead of cut off.
+   ========================================================================== */
+@media print {
+  .sidebar,
+  .sidebar-toggle,
+  .cp-mobile-trigger,
+  .layout-float,
+  .github-corner,
+  #reading-progress,
+  .reader-time,
+  .reader-toast,
+  .pagination,
+  .docsify-pagination-container,
+  .docsify-copy-code-button,
+  .pt-bulk,
+  .pt-check-wrap { display: none !important; }
+
+  html, body, .content {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .content { margin: 0 !important; padding: 0 !important; }
+  .markdown-section {
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 11pt;
+  }
+  .markdown-section > * { max-width: none !important; }
+  .markdown-section p,
+  .markdown-section li,
+  .markdown-section td { color: #000 !important; }
+  .markdown-section h1,
+  .markdown-section h2,
+  .markdown-section h3,
+  .markdown-section a { color: #000 !important; }
+
+  .markdown-section h2,
+  .markdown-section h3 { break-after: avoid; page-break-after: avoid; }
+  .markdown-section pre,
+  .markdown-section tr,
+  .markdown-section blockquote { break-inside: avoid; page-break-inside: avoid; }
+
+  /* A printed page cannot scroll sideways. */
+  .markdown-section pre,
+  .markdown-section pre > code { white-space: pre-wrap !important; word-break: break-word; }
+  .markdown-section .table-wrap { overflow: visible !important; border-color: #bbb !important; }
+  .markdown-section th { background: #f0f0f0 !important; }
+  .markdown-section tbody tr:nth-child(even) td { background: none !important; }
+}

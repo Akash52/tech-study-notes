@@ -470,7 +470,12 @@ body.close .sidebar-toggle { left: 14px; }
 }
 .markdown-section p,
 .markdown-section li {
+  /* Body text sits close to full-strength text rather than at the
+     secondary grey: comfortable for a paragraph, tiring for a 2,800-line
+     guide. Mixed from the theme's own two colours, so it works in all 11
+     themes (Daylight: 5.2:1 -> ~11:1). The first line is the fallback. */
   color: var(--text-secondary);
+  color: color-mix(in srgb, var(--text) 84%, var(--bg));
   font-size: var(--read-size);
   line-height: var(--read-leading);
 }
