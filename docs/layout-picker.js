@@ -129,7 +129,7 @@
 
     html += '<label class="lp-switch"><input type="checkbox" role="switch" data-axis="focus">' +
       '<span class="lp-switch-text">Focus mode' +
-      '<small>Hides the sidebar and contents rail. The &#9776; button brings the sidebar back.</small></span>' +
+      '<small>Hides the sidebar. The &#9776; button brings it back.</small></span>' +
       '<span class="lp-track" aria-hidden="true"></span></label>';
     return html;
   }
@@ -212,7 +212,7 @@
       if (opener === els.trigger) closePanel(false);
     }
     sync();
-    // The TOC's scroll-spy and the drawer's inert state both measure layout.
+    // The drawer's inert state and the reading-progress bar both measure layout.
     window.dispatchEvent(new Event('resize'));
   }
 

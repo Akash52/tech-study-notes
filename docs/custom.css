@@ -30,13 +30,14 @@
   --read-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --read-size: 15px;      /* body text; headings, code and tables scale from it */
   --read-leading: 1.8;
-  --col-max: 720px;       /* article cap below 1201px, where there is no TOC rail */
-  --prose-max: 740px;     /* ~74ch at 15px Inter, inside the 75ch target */
-  --article-max: var(--prose-max);   /* widened on large screens, see below */
-  --toc-width: 200px;
-  --toc-gutter: 56px;
-  /* The article and its "On this page" rail are centred together as one unit. */
-  --reading-max: calc(var(--article-max) + var(--toc-gutter) + var(--toc-width));
+  /* Paragraph width. There used to be an "On this page" rail beside the
+     article; the sidebar already lists every heading of the open page, so the
+     rail was removed and its 256px handed to the reading column instead. */
+  --prose-max: 860px;
+  /* Code blocks and tables use the rail's former space on top of that. */
+  --article-max: var(--prose-max);   /* widened at 1201px+, see below */
+  --col-max: calc(var(--prose-max) + 96px);   /* cap below 1201px; includes the 48px side padding */
+  --reading-max: var(--article-max);
   --reading-pad: max(48px, (100vw - var(--layout-offset) - var(--reading-max)) / 2);
 
   /* ---- light palette (default) ---- */
@@ -620,118 +621,28 @@ body.close #reading-progress { left: 0; }
   #reading-progress { left: 0; }
 }
 
-/* ---------- Table of contents ---------- */
-#page-toc {
-  position: fixed;
-  top: 40px;
-  right: 24px;
-  width: 190px;
-  max-height: calc(100vh - 80px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-#page-toc .toc-heading {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 12px;
-  padding-left: 16px;
-}
-
-#page-toc .toc-list,
-#page-toc .toc-sub { list-style: none; margin: 0; padding: 0; }
-#page-toc li { margin: 0; }
-
-/* H3 rows are hidden until their section is the one being read. Empty groups
-   (an H2 with no subsections) simply have nothing to show. */
-#page-toc .toc-sub { display: none; }
-#page-toc .toc-item.is-open > .toc-sub { display: block; }
-
-#page-toc .toc-link {
-  display: block;
-  padding: 5px 0 5px 16px;
-  font-size: 13px;
-  color: var(--text-muted);
-  text-decoration: none;
-  border-left: 2px solid var(--border-light);
-  transition: color var(--transition), border-color var(--transition);
-}
-#page-toc .toc-link:hover { color: var(--text-secondary); border-left-color: var(--text-muted); }
-#page-toc .toc-link.active {
-  color: var(--accent);
-  border-left-color: var(--accent);
-  font-weight: 500;
-}
-#page-toc .toc-link:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: -2px;
-  border-radius: 0 4px 4px 0;
-}
-
-/* Sub-rows sit further in and read quieter than their parent section. */
-#page-toc .toc-l3 {
-  padding-left: 26px;
-  font-size: 12px;
-  line-height: 1.45;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #page-toc .toc-link { transition: none !important; }
-}
-
 /* ---------- Wide-screen layout ----------
-   Below 1200px the TOC is hidden and the article simply centres in the main
-   column. At and above 1200px the TOC appears, and the two must be laid out
-   together - previously they were not, which caused two distinct problems:
+   From 1201px the article is centred in the space beside the sidebar, at most
+   --reading-max wide. Paragraphs, lists and headings stop at --prose-max to
+   keep lines trackable; code blocks and tables - which genuinely benefit from
+   width, and dominate this corpus - run on to --article-max.
 
-     - `.markdown-section` centred inside `.content` while `#page-toc` was
-       fixed to the VIEWPORT's right edge. Between roughly 1200px and 1425px
-       the two overlapped (measured: 73px of overlap at 1280px, with TOC text
-       sitting on top of the article).
-     - Above ~1600px they drifted apart instead. At 1857px the article sat
-       702px from the sidebar with a 216px moat before the TOC, using only
-       39% of the window.
-
-   Both are fixed by treating [article + gutter + TOC] as a single region of
-   at most --reading-max, centred in the space beside the sidebar. The article
-   is left-aligned inside that region and always reserves the TOC rail, so the
-   gap between them is a constant 56px and can never collapse.
-
-   NOTE the 1201px: the rule that hides the TOC below is `max-width: 1200px`,
-   which INCLUDES 1200. Using min-width:1200 here made both match at exactly
-   1200px, so the article reserved a 256px rail for a TOC that was not being
-   rendered and shrank to 571px beside empty space. */
+   (This block used to centre [article + gutter + "On this page" rail] as one
+   unit. The rail is gone, so the region is just the article.) */
 @media screen and (min-width: 1201px) {
+  /* 1116px at the default 860px prose width; follows the reader's width choice. */
+  :root { --article-max: calc(var(--prose-max) + 256px); }
+
   .content {
     padding-left: var(--reading-pad);
     padding-right: var(--reading-pad);
   }
   .markdown-section {
-    /* Reserve the rail, then cap for line length. */
-    width: calc(100% - var(--toc-width) - var(--toc-gutter));
+    width: 100%;
     max-width: var(--article-max);
     margin: 0;
     padding: 40px 0 100px;
   }
-  #page-toc {
-    left: auto;
-    /* Same expression as the content padding, so the rail lands exactly on
-       the region's right edge rather than the window's. */
-    right: var(--reading-pad);
-    width: var(--toc-width);
-  }
-}
-
-/* On large screens the article column grows but PROSE does not: paragraphs,
-   lists and headings stay at --prose-max so line length is preserved, while
-   code blocks and tables - which genuinely benefit from width, and dominate
-   this corpus - use the extra room. Without this the column simply floated in
-   the middle of the window with ~700px of dead space beside it. */
-@media screen and (min-width: 1600px) {
-  /* 920px at the default 740px prose width; follows the reader's width choice. */
-  :root { --article-max: calc(var(--prose-max) + 180px); }
 
   .markdown-section > p,
   .markdown-section > ul,
@@ -745,8 +656,4 @@ body.close #reading-progress { left: 0; }
   .markdown-section > .pt-bulk {
     max-width: var(--prose-max);
   }
-}
-
-@media screen and (max-width: 1200px) {
-  #page-toc { display: none; }
 }

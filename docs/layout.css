@@ -41,34 +41,31 @@
 :root[data-read-spacing="relaxed"] .markdown-section p { margin: 1.1em 0; }
 
 /* ---------- Width ----------
-   --prose-max caps paragraphs; --col-max caps the article below 1201px (it
-   includes the 48px side padding, hence the larger numbers). */
-:root[data-read-width="narrow"] { --prose-max: 620px; --col-max: 660px; }
-:root[data-read-width="wide"]   { --prose-max: 900px; --col-max: 980px; }
+   --prose-max caps paragraphs; --col-max and --article-max are derived from
+   it in custom.css, so one number per step is all that changes here. */
+:root[data-read-width="narrow"] { --prose-max: 680px; }
+:root[data-read-width="wide"]   { --prose-max: 1040px; }
 /* Full: no cap at all - text, code and tables fill whatever the window gives,
    and collapsing the sidebar hands its 272px straight to the article. Long
    lines are harder to track, which is why this is opt-in, but on a big monitor
-   it is what many readers want. The 1400px only bounds the centring maths. */
+   it is what many readers want. 100vw simply means "never the limiting
+   factor": the 48px side padding is what stops it. */
 :root[data-read-width="full"] {
-  --prose-max: 1400px;
-  --article-max: 1400px;
+  --prose-max: 100vw;
+  --article-max: 100vw;
   --col-max: none;
 }
 
 /* ---------- Focus mode ----------
-   Hides the sidebar and the "On this page" rail and centres one column, the
+   Hides the sidebar and centres one column, the
    way Safari Reader and iA Writer do.
 
    The sidebar is not gone, it becomes a drawer: the existing toggle button
    opens it over the page. That reuses Docsify's own `body.close` class with
    the same inverted meaning it already has on mobile (close = drawer OPEN),
    which is why custom.js treats focus mode like a phone when it sets `inert`. */
-:root[data-focus="on"] {
-  --layout-offset: 0px;
-  --reading-max: var(--article-max);
-}
+:root[data-focus="on"] { --layout-offset: 0px; }
 :root[data-focus="on"] .content { margin-left: 0; }
-:root[data-focus="on"] #page-toc { display: none; }
 :root[data-focus="on"] #reading-progress { left: 0; }
 
 :root[data-focus="on"] .sidebar {
@@ -95,10 +92,6 @@
 :root[data-focus="on"] .cp-mobile-trigger { display: flex; }
 :root[data-focus="on"] body.close .cp-mobile-trigger { display: none; }
 
-@media screen and (min-width: 1201px) {
-  /* No rail to reserve, so the article takes the whole centred region. */
-  :root[data-focus="on"] .markdown-section { width: 100%; }
-}
 
 /* ==========================================================================
    Layout panel (layout-picker.js)

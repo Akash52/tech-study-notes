@@ -3,7 +3,7 @@
  *
  * The theme system (themes.js) decides colour; this file decides the shape of
  * the page: typeface, text size, line spacing, column width, and whether the
- * sidebar and "On this page" rail are shown at all.
+ * sidebar is shown at all.
  *
  * Design notes worth knowing before editing:
  *
