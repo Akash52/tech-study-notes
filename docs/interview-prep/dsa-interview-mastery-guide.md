@@ -5228,13 +5228,15 @@ function setZeroes(matrix) {
 **Action**:
 - "**Data-driven decision**: Wrote both implementations, benchmarked with production-size data"
 - "**Results**: Recursion was 40ms, iteration was 35ms (12% faster) but required 3x more code"
-- "**Trade-off analysis**:
+- "**Trade-off analysis**:"
+
   | Aspect | Recursive | Iterative |
   |--------|-----------|-----------|
   | Speed | 40ms | 35ms |
   | Code lines | 15 | 45 |
   | Maintainability | High | Medium |
-  | Stack overflow risk | Yes (deep trees) | No |"
+  | Stack overflow risk | Yes (deep trees) | No |
+
 - "**Compromise**: Used recursion with **tail call optimization** and stack depth limit"
 
 **Result**: "Combined best of both - clean code with safeguards. Learned to benchmark assumptions rather than debate opinions."

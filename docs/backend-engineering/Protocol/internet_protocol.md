@@ -6,13 +6,19 @@ This lecture is about how data actually moves across a network at the lowest mea
 
 ---
 
-## 2. THE BREAKDOWN**IP Address Structure**
+## 2. THE BREAKDOWN
+
+**IP Address Structure**
 
 An IPv4 address is 32 bits (4 bytes), split into two logical parts: the **network portion** and the **host portion**. The `/X` (CIDR) notation tells you how many bits belong to the network. With `/24`, the first 3 bytes are network, the last byte is host — giving you up to 253 usable hosts.
 
-**Subnet mask**: ANDing your IP with the subnet mask strips the host bits, leaving just the network address. This single bitwise operation answers: *"Is this destination IP in my network, or do I need a router?"***Time to Live (TTL) & ICMP**
+**Subnet mask**: ANDing your IP with the subnet mask strips the host bits, leaving just the network address. This single bitwise operation answers: *"Is this destination IP in my network, or do I need a router?"*
 
-Every packet carries a TTL byte — a hop counter. Each router decrements it by 1. When it hits zero, the router drops the packet and fires an ICMP message back to the source. This is exactly how `traceroute` works: it intentionally sends packets with TTL=1, then TTL=2, etc., and collects the ICMP "expired" responses from each router along the path.---
+**Time to Live (TTL) & ICMP**
+
+Every packet carries a TTL byte — a hop counter. Each router decrements it by 1. When it hits zero, the router drops the packet and fires an ICMP message back to the source. This is exactly how `traceroute` works: it intentionally sends packets with TTL=1, then TTL=2, etc., and collects the ICMP "expired" responses from each router along the path.
+
+---
 
 ## 3. ENGINEER'S NOTEBOOK
 

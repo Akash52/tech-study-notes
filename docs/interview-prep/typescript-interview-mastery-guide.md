@@ -1023,7 +1023,7 @@ type D = Flatten<number>;    // number
 - "**Generics preserve type information** - unlike `any`, you maintain full type safety"
 - "**Type inference works with generics** - often don't need to specify type parameters"
 - "**Constraints make generics more useful** - ensure T has certain properties"
-- "**React heavily uses generics** - useState<T>, useReducer<S, A>, etc."
+- "**React heavily uses generics** - `useState<T>`, `useReducer<S, A>`, etc."
 
 ####  Weak Answer:
 - "Generics are like variables for types" (too vague)
@@ -3046,7 +3046,7 @@ emitter.emit("userLogin", {
 
 ---
 
-*Good luck with your TypeScript interviews! *
+*Good luck with your TypeScript interviews!*
 
 *Remember: Understanding the type system deeply is more valuable than memorizing syntax.*
 
@@ -4747,7 +4747,7 @@ You now have a comprehensive guide covering:
 ### Final Advice:
 > "The best TypeScript developers don't memorize syntax—they understand the type system deeply and apply it to solve real problems. Show your thinking process, explain trade-offs, and demonstrate how TypeScript makes codebases more maintainable."
 
-**Good luck with your TypeScript interview! You've got this! **
+**Good luck with your TypeScript interview! You've got this!**
 
 ---
 

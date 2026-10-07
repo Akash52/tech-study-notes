@@ -6,7 +6,7 @@
 >
 > **Related guides:**
 > - [ts-interview-qa.md](./ts-interview-qa.md) — Fast-reference Q&A, interview speed-round format
-> - [typescript-interview-mastery-guide.md](./typescript-interview-mastery-guide.md) — Deep-dive for interviews (97 topics, all levels)
+> - [typescript-interview-mastery-guide.md](../interview-prep/typescript-interview-mastery-guide.md) — Deep-dive for interviews (97 topics, all levels)
 
 ---
 
@@ -863,7 +863,7 @@ npm install --save-dev @types/jest
 
 ---
 
-## 10. Common Mistakes to Avoid
+## 11. Common Mistakes to Avoid
 
 ###  Mistake 1: Over-annotating
 

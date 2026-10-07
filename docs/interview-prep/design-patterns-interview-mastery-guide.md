@@ -10,15 +10,9 @@ This guide covers the 23 Gang of Four (GoF) design patterns plus modern JavaScri
 
 ## Table of contents
 
-1. [Foundational Patterns (Q1-10)](#foundational-patterns-q1-10) — Creational and Structural basics
-2. [Behavioral Patterns (Q11-15)](#behavioral-patterns-q11-15) — Communication between objects
-3. [Modern JavaScript/TypeScript Patterns (Q16-20)](#modern-javascripttypescript-patterns-q16-20) — Modules, Mixins, Decorators
-4. [Real-World Implementations (Q21-25)](#real-world-implementations-q21-25) — Framework patterns, State management
-5. [Advanced and Anti-Patterns (Q26-30)](#advanced-and-anti-patterns-q26-30) — Architectural patterns, What to avoid
-6. [Behavioral Questions (Q31-35)](#behavioral-questions-q31-35) — Pattern selection, Refactoring stories
-7. [Quick Fire Round (Q36-45)](#quick-fire-round-q36-45) — Rapid pattern recognition
-8. [Interview Success Tips](#interview-success-tips) — Pattern selection matrix, Common scenarios
-9. [See also](#see-also) — Books, courses, practice
+1. [Study strategy](#study-strategy) — Preparation timeline, SOLID principles
+2. [Foundational Patterns (Q1-10)](#foundational-patterns-q1-10) — Singleton, Factory, Builder, Prototype, Adapter, Decorator, Proxy, Facade, Composite, Observer
+3. [See also](#see-also) — Related guides
 
 ## Study strategy
 

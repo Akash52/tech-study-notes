@@ -6,7 +6,7 @@
 >
 > **Related guides:**
 > - [ts-essentials-guide.md](./ts-essentials-guide.md) — Practical daily-use patterns (80/20 guide)
-> - [typescript-interview-mastery-guide.md](./typescript-interview-mastery-guide.md) — Deep-dive mastery guide with difficulty ratings and follow-ups
+> - [typescript-interview-mastery-guide.md](../interview-prep/typescript-interview-mastery-guide.md) — Deep-dive mastery guide with difficulty ratings and follow-ups
 
 ---
 
@@ -26,23 +26,23 @@
 
 ### Q1: What is TypeScript and why use it over JavaScript?
 
-** Strong Answer:**
+**Strong Answer:**
 "TypeScript is a statically-typed superset of JavaScript that compiles to plain JavaScript. I use it because it catches errors during development rather than at runtime, which saves time debugging. It provides excellent IDE support with autocomplete and refactoring, and makes code more maintainable through type safety and self-documenting code."
 
-** Follow-up Discussion Points:**
+**Follow-up Discussion Points:**
 - "Any valid JavaScript is valid TypeScript"
 - Mention specific IDE features (IntelliSense, refactoring)
 - Discuss how it helps in large codebases
 - Talk about the compilation step
 
-** Weak Answer:**
+**Weak Answer:**
 "It's JavaScript with types." (Too brief, shows no depth)
 
 ---
 
 ### Q2: Explain the difference between `interface` and `type`. When would you use each?
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 // Interface - best for object shapes
 interface User {
@@ -69,7 +69,7 @@ type Point = [number, number];
 type ReadonlyUser = Readonly<User>;
 ```
 
-** What to Say:**
+**What to Say:**
 "I use `interface` for object shapes because they're more extensible and support declaration merging, which is useful when working with third-party libraries. I use `type` for unions, intersections, and when I need more complex type operations like mapped types or conditional types."
 
 **Common Follow-up:** "Can you extend a type?"
@@ -79,7 +79,7 @@ type ReadonlyUser = Readonly<User>;
 
 ### Q3: What is type inference? Can you give examples?
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 // TypeScript infers the type automatically
 const name = "Alice";        // inferred as string
@@ -102,16 +102,16 @@ button?.addEventListener("click", (e) => {
 });
 ```
 
-** What to Say:**
+**What to Say:**
 "Type inference is TypeScript's ability to automatically determine types without explicit annotations. This reduces verbosity while maintaining type safety. The compiler analyzes variable initialization, function return values, and context to infer the most accurate type."
 
-** Pro Tip:** "I enable `noImplicitAny` in my tsconfig to ensure TypeScript infers types or requires explicit annotations, which helps catch errors early."
+**Pro Tip:** "I enable `noImplicitAny` in my tsconfig to ensure TypeScript infers types or requires explicit annotations, which helps catch errors early."
 
 ---
 
 ### Q4: Explain `any`, `unknown`, and `never`. When would you use each?
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 // any - turns off type checking (use sparingly!)
 let value: any = "hello";
@@ -155,14 +155,14 @@ function getArea(shape: Shape) {
 }
 ```
 
-** What to Say:**
+**What to Say:**
 "I use `any` only when rapidly prototyping or integrating with untyped JavaScript, but I prefer `unknown` because it's type-safe—you must narrow the type before using it. `never` represents values that never occur, which is useful for exhaustive checking and functions that never return."
 
 ---
 
 ### Q5: What is structural typing (duck typing)?
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 interface Point {
   x: number;
@@ -187,7 +187,7 @@ printPoint({ x: 5, y: 10 });              //
 printPoint({ x: 5, y: 10, z: 15 });       //  Extra properties OK
 ```
 
-** What to Say:**
+**What to Say:**
 "TypeScript uses structural typing, which means type compatibility is based on the structure (properties and their types) rather than the type name. If two types have the same shape, they're compatible. This is different from nominal typing in languages like Java where you must explicitly extend or implement."
 
 **Real-world Example:** "This is why we can pass plain objects to functions expecting interfaces without creating class instances."
@@ -198,7 +198,7 @@ printPoint({ x: 5, y: 10, z: 15 });       //  Extra properties OK
 
 ### Q6: What are Union and Intersection types?
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 // UNION (OR) - value can be ONE of several types
 type StringOrNumber = string | number;
@@ -244,14 +244,14 @@ const staff: Staff = {
 };
 ```
 
-** What to Say:**
+**What to Say:**
 "Union types use `|` for 'either/or' scenarios—a value can be one of several types. Intersection types use `&` to combine types—a value must satisfy all types. Unions are great for function parameters that accept multiple types, while intersections are useful for mixing behaviors or properties."
 
 ---
 
 ### Q7: Explain Type Guards and Type Narrowing
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 // 1. typeof type guard (primitives)
 function formatValue(value: string | number) {
@@ -319,14 +319,14 @@ function processData(data: unknown) {
 }
 ```
 
-** What to Say:**
+**What to Say:**
 "Type guards help TypeScript narrow types at runtime. I use `typeof` for primitives, `instanceof` for classes, and `in` for property checks. For complex types, I create custom type guards using type predicates (`obj is Type`), which provide reusable, type-safe validation."
 
 ---
 
 ### Q8: What are Utility Types? Give practical examples.
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 interface User {
   id: string;
@@ -394,14 +394,14 @@ function validateConfig(config: Required<Config>) {
 }
 ```
 
-** What to Say:**
+**What to Say:**
 "Utility types help transform existing types without rewriting them. I frequently use `Partial` for update operations, `Pick` and `Omit` for API responses, `ReturnType` to derive types from functions, and `Record` for type-safe key-value objects. These make code more DRY and maintainable."
 
 ---
 
 ### Q9: What are Generics? Provide practical examples.
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 // Without generics (not reusable)
 function getFirstString(arr: string[]): string {
@@ -464,7 +464,7 @@ const merged = merge({ name: "Alice" }, { age: 30 });
 // Type: { name: string } & { age: number }
 ```
 
-** What to Say:**
+**What to Say:**
 "Generics allow creating reusable components that work with multiple types while maintaining type safety. They're like function parameters but for types. I use them for API wrappers, data structures, and utility functions that need to work with different types without sacrificing type information."
 
 **Real-world Example:** "In React, `useState<T>()` uses generics to maintain type safety for state values."
@@ -473,7 +473,7 @@ const merged = merge({ name: "Alice" }, { age: 30 });
 
 ### Q10: What is `strictNullChecks` and why is it important?
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 // Without strictNullChecks (dangerous!)
 // tsconfig.json: "strictNullChecks": false
@@ -521,10 +521,10 @@ function getDisplayName(name: string | null | undefined): string {
 }
 ```
 
-** What to Say:**
+**What to Say:**
 "With `strictNullChecks` enabled, `null` and `undefined` are not assignable to other types unless explicitly stated. This catches the most common runtime error: 'Cannot read property of null/undefined'. I always enable it because it forces proper null handling through optional chaining, nullish coalescing, or explicit checks."
 
-** Pro Tip:** "This is one of the most valuable strict mode flags. It prevents billions of dollars in production bugs."
+**Pro Tip:** "This is one of the most valuable strict mode flags. It prevents billions of dollars in production bugs."
 
 ---
 
@@ -532,7 +532,7 @@ function getDisplayName(name: string | null | undefined): string {
 
 ### Q11: Write a type-safe function to fetch data from an API
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 // Define result type (error handling pattern)
 type Result<T, E = Error> = 
@@ -582,14 +582,14 @@ async function getUser(id: string) {
 }
 ```
 
-** What to Say:**
+**What to Say:**
 "I use the Result pattern for error handling because it makes success and error cases explicit in the type system. Instead of throwing errors or using try-catch everywhere, callers must check the success flag, which TypeScript uses to narrow the type. This makes error handling explicit and type-safe."
 
 ---
 
 ### Q12: How do you handle form data type-safely?
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 // Define form data structure
 interface SignupForm {
@@ -668,14 +668,14 @@ function SignupComponent() {
 }
 ```
 
-** What to Say:**
+**What to Say:**
 "I define interfaces for form data structure and use discriminated unions for validation results. This ensures type safety throughout the validation process and makes it impossible to access data without checking if validation passed. The type system guides error handling naturally."
 
 ---
 
 ### Q13: Create a type-safe state machine
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 // Define states and events
 type State = 
@@ -738,7 +738,7 @@ if (state.status === "success") {
 }
 ```
 
-** What to Say:**
+**What to Say:**
 "I use discriminated unions for state machines because TypeScript can narrow types based on the discriminant property (`status` in this case). This ensures only valid state transitions happen and makes it impossible to access properties that don't exist in the current state. The `never` type in the default case ensures exhaustive checking."
 
 ---
@@ -747,7 +747,7 @@ if (state.status === "success") {
 
 ### Q14: What are Mapped Types? Provide examples.
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 // Create variations of existing types
 
@@ -808,14 +808,14 @@ type UserForm = FormState<User>;
 // }
 ```
 
-** What to Say:**
+**What to Say:**
 "Mapped types transform existing types by iterating over their properties. I use them to create utility types like `Partial`, `Readonly`, or custom transformations. They're powerful for creating type-safe form states, API wrappers, or any scenario where I need to systematically transform an object type."
 
 ---
 
 ### Q15: Explain Conditional Types with examples
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 // Basic conditional type syntax: T extends U ? X : Y
 
@@ -859,14 +859,14 @@ type Nested = string[][][];
 type Flattened = Flatten<Nested>; // string
 ```
 
-** What to Say:**
+**What to Say:**
 "Conditional types work like ternary operators for types. They're useful for creating generic utilities that behave differently based on the input type. I use them with `infer` to extract types from complex structures, like getting the element type of an array or the return type of a function."
 
 ---
 
 ### Q16: What are Template Literal Types?
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 // Create types from string patterns
 type EmailLocale = "en" | "es" | "fr";
@@ -914,7 +914,7 @@ navigate("/users"); //
 navigate("/invalid"); //  Error
 ```
 
-** What to Say:**
+**What to Say:**
 "Template literal types let me create string types from patterns, similar to template literals in JavaScript. I use them for type-safe CSS properties, event handlers, API routes, and any scenario where strings follow a predictable pattern. They catch typos at compile time and provide excellent autocomplete."
 
 ---
@@ -923,7 +923,7 @@ navigate("/invalid"); //  Error
 
 ### Q17: How do you type a Redux store?
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 // State interface
 interface RootState {
@@ -1021,14 +1021,14 @@ function UserProfile() {
 }
 ```
 
-** What to Say:**
+**What to Say:**
 "I define clear interfaces for state shape and use discriminated unions for actions. This ensures reducers handle all action types exhaustively. I export typed versions of `useSelector` and `useDispatch` hooks so the entire Redux integration is type-safe throughout the application."
 
 ---
 
 ### Q18: How do you handle environment variables type-safely?
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 // Define required environment variables
 interface Env {
@@ -1085,14 +1085,14 @@ console.log(env.PORT); //  Type: number
 console.log(env.NODE_ENV); //  Type: "development" | "production" | "test"
 ```
 
-** What to Say:**
+**What to Say:**
 "I create an interface defining all required environment variables with their correct types. Then I write a validation function that parses and type-checks them at application startup. This fails fast if configuration is wrong and provides type-safe access throughout the codebase. The singleton pattern ensures validation only happens once."
 
 ---
 
 ### Q19: How do you type Higher-Order Components (HOC) in React?
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 import React, { ComponentType } from 'react';
 
@@ -1139,7 +1139,7 @@ const Profile = withAuth(ProfileComponent);
 <Profile userId="123" />
 ```
 
-** What to Say:**
+**What to Say:**
 "I use generic type parameters with extends constraints to ensure the wrapped component accepts the injected props. The returned component has those props omitted from its prop requirements using the Omit utility type. This makes the HOC fully type-safe—the wrapped component requires the injected props, but consumers don't need to pass them."
 
 ---
@@ -1153,7 +1153,7 @@ const obj = {};
 obj.name = "Alice"; // Error: Property 'name' does not exist on type '{}'
 ```
 
-** Strong Answer:**
+**Strong Answer:**
 "TypeScript infers `obj` as type `{}` (empty object) because it has no properties when initialized. TypeScript's structural typing means you can't add properties that don't exist in the type definition.
 
 **Three solutions:**
@@ -1197,7 +1197,7 @@ const user: User = {
 };
 ```
 
-** Strong Answer:**
+**Strong Answer:**
 "This actually depends on the context! TypeScript has 'excess property checking' that only applies to object literals assigned directly to a variable. This code will ERROR because of excess property checking.
 
 However, if you assign to a variable first, it works:
@@ -1229,7 +1229,7 @@ Or use the `Exact` utility type (if available in your codebase)."
 
 ### Q22: What's the difference between `type` and `interface` for function types?
 
-** Strong Answer:**
+**Strong Answer:**
 ```typescript
 // Both work for function types
 
@@ -1245,7 +1245,7 @@ type GreetFunction = (name: string) => string;
 const greet: GreetFunction = (name) => `Hello ${name}`;
 ```
 
-** What to Say:**
+**What to Say:**
 "For function types, `type` is more concise and readable with arrow syntax. `interface` uses call signature syntax which is more verbose. Both are functionally equivalent. I prefer `type` for function signatures because it looks more like JavaScript function syntax."
 
 ---
@@ -1254,7 +1254,7 @@ const greet: GreetFunction = (name) => `Hello ${name}`;
 
 ### Q23: Tell me about a time TypeScript caught a bug before production
 
-** Strong Answer Framework:**
+**Strong Answer Framework:**
 ```
 Situation: "In our React app, we had an API that returned user data..."
 
@@ -1280,7 +1280,7 @@ discovering them in production logs."
 
 ### Q24: How do you convince a team to adopt TypeScript?
 
-** Strong Answer:**
+**Strong Answer:**
 "I focus on practical benefits:
 
 **Immediate Value:**
@@ -1410,6 +1410,6 @@ if ("name" in user) {
 
 ---
 
-**You've got this! ** 
+**You've got this!**
 
 Focus on understanding concepts, not memorizing answers. The best interview answers come from real experience and genuine understanding. Good luck! 

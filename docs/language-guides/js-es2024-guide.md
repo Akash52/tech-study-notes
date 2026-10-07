@@ -54,7 +54,7 @@ Think of JavaScript as having three layers:
 
 ### 2.1 Variables: `const`, `let`, and Block Scope
 
-** Use `const` by default, `let` when reassignment is needed**
+**Use `const` by default, `let` when reassignment is needed**
 
 ```javascript
 //  Old way - avoid var
@@ -76,7 +76,7 @@ count = 1;                 //  OK
 // console.log(temp);      //  Error: temp not defined
 ```
 
-** Why This Matters:**
+**Why This Matters:**
 - `const` prevents accidental reassignment
 - Block scope prevents variable leakage
 - Makes code more predictable and easier to debug
@@ -224,7 +224,7 @@ function createUser({ name, email, age = 18 }) {
 createUser({ name: "Charlie", email: "charlie@example.com" });
 ```
 
-** Real-World Use Case: API Responses**
+**Real-World Use Case: API Responses**
 
 ```javascript
 // Instead of this
@@ -365,7 +365,7 @@ console.log(otherProps); // { age: 30, email: "alice@example.com" }
 }
 ```
 
-** Why `"type": "module"`?**
+**Why `"type": "module"`?**
 - Enables ES6 import/export syntax
 - Modern module system
 - Better than CommonJS for new projects
@@ -452,7 +452,7 @@ getUserData(userId, function(error, user) {
 });
 ```
 
-** Solution: Async/Await**
+**Solution: Async/Await**
 
 ```javascript
 async function loadUserData(userId) {
@@ -985,7 +985,7 @@ console.log(numbers); // [1, 1, 3, 4, 5, 9] - ORIGINAL CHANGED!
 // This breaks in React/Redux when you need immutability
 ```
 
-** ES2024 Solution: Non-Mutating Methods**
+**ES2024 Solution: Non-Mutating Methods**
 
 ```javascript
 const numbers = [3, 1, 4, 1, 5, 9];
@@ -1008,7 +1008,7 @@ const replaced = numbers.with(0, 999);
 console.log(replaced); // [999, 1, 4, 1, 5, 9]
 ```
 
-** Real-World Use Case: React State**
+**Real-World Use Case: React State**
 
 ```javascript
 //  Old way - easy to mutate state accidentally
@@ -1055,7 +1055,7 @@ const grouped = products.reduce((groups, product) => {
 }, {});
 ```
 
-** ES2024 Solution: Object.groupBy()**
+**ES2024 Solution: Object.groupBy()**
 
 ```javascript
 const grouped = Object.groupBy(products, product => product.category);
@@ -1103,7 +1103,7 @@ console.log(byAge.get(30));
 // [{ name: "Bob", age: 30 }]
 ```
 
-** Real-World Pattern: Group and Transform**
+**Real-World Pattern: Group and Transform**
 
 ```javascript
 // Group orders by status and calculate totals
@@ -1146,7 +1146,7 @@ const promise = new Promise((res, rej) => {
 someAsyncOperation().then(resolve).catch(reject);
 ```
 
-** ES2024 Solution:**
+**ES2024 Solution:**
 
 ```javascript
 const { promise, resolve, reject } = Promise.withResolvers();
@@ -1158,7 +1158,7 @@ const result = await promise;
 console.log(result); // "Done!" (after 2 seconds)
 ```
 
-** Real-World Use Case: Event-Based Async**
+**Real-World Use Case: Event-Based Async**
 
 ```javascript
 // Wait for user interaction
@@ -1229,7 +1229,7 @@ console.log(large.isSupersetOf(small));  // true
 console.log(small.isDisjointFrom(setB)); // true (no common elements)
 ```
 
-** Real-World Use Cases:**
+**Real-World Use Cases:**
 
 ```javascript
 // User permissions
