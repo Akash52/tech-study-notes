@@ -8,6 +8,9 @@
        applies the saved theme before the first paint, so there is no flash of
        the wrong colours. Also the single source of theme data. -->
   <script src="themes.js"></script>
+  <!-- Reading layouts (font, size, spacing, width, focus). Blocking for the
+       same reason as themes.js: applied before the first paint. -->
+  <script src="layouts.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -16,6 +19,7 @@
   <link rel="stylesheet" href="progress-tracker.css">
   <link rel="stylesheet" href="theme-picker.css">
   <link rel="stylesheet" href="nav.css">
+  <link rel="stylesheet" href="layout.css">
 </head>
 <body>
   <div id="app"></div>
@@ -53,6 +57,8 @@
   <script src="progress-tracker.js"></script>
   <!-- Light/dark theme switcher -->
   <script src="theme-picker.js"></script>
+  <!-- Reading-layout panel, beside the theme switcher -->
+  <script src="layout-picker.js"></script>
   <!-- Sidebar labels + home page presentation -->
   <script src="nav.js"></script>
 
@@ -63,5 +69,9 @@
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-sql.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-graphql.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-nginx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-protobuf.min.js"></script>
 </body>
 </html>

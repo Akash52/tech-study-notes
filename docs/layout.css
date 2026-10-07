@@ -1,0 +1,371 @@
+/* ==========================================================================
+   Reading layouts
+   --------------------------------------------------------------------------
+   layouts.js writes one `data-read-*` attribute per axis on <html>; the rules
+   below turn each value into the tokens custom.css already consumes. Absent
+   attributes (no JavaScript) leave the custom.css defaults in place, which are
+   the "Standard" preset.
+
+   Colour comes entirely from the theme tokens, so every layout works in every
+   theme without a single extra rule.
+   ========================================================================== */
+
+/* ---------- Font ---------- */
+:root[data-read-font="serif"] {
+  --read-font: 'Literata', Georgia, 'Times New Roman', serif;
+}
+:root[data-read-font="mono"] {
+  --read-font: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+}
+:root[data-read-font="legible"] {
+  --read-font: 'Atkinson Hyperlegible', 'Inter', -apple-system, sans-serif;
+}
+/* Inter's tight tracking suits Inter; the other faces were drawn with their
+   own spacing and look cramped with it. */
+:root[data-read-font="serif"] .markdown-section,
+:root[data-read-font="mono"] .markdown-section,
+:root[data-read-font="legible"] .markdown-section { letter-spacing: 0; }
+/* Mono body text sets wide, so it runs one step smaller to keep ~70ch. */
+:root[data-read-font="mono"] .markdown-section p,
+:root[data-read-font="mono"] .markdown-section li { font-size: calc(var(--read-size) - 1px); }
+
+/* ---------- Size ---------- */
+:root[data-read-size="s"]  { --read-size: 14px; }
+:root[data-read-size="l"]  { --read-size: 17px; }
+:root[data-read-size="xl"] { --read-size: 19px; }
+
+/* ---------- Spacing ---------- */
+:root[data-read-spacing="compact"] { --read-leading: 1.6; }
+:root[data-read-spacing="relaxed"] { --read-leading: 2; }
+:root[data-read-spacing="compact"] .markdown-section p { margin: 0.6em 0; }
+:root[data-read-spacing="relaxed"] .markdown-section p { margin: 1.1em 0; }
+
+/* ---------- Width ----------
+   --prose-max caps paragraphs; --col-max caps the article below 1201px (it
+   includes the 48px side padding, hence the larger numbers). */
+:root[data-read-width="narrow"] { --prose-max: 620px; --col-max: 660px; }
+:root[data-read-width="wide"]   { --prose-max: 900px; --col-max: 980px; }
+/* Full: no cap at all - text, code and tables fill whatever the window gives,
+   and collapsing the sidebar hands its 272px straight to the article. Long
+   lines are harder to track, which is why this is opt-in, but on a big monitor
+   it is what many readers want. The 1400px only bounds the centring maths. */
+:root[data-read-width="full"] {
+  --prose-max: 1400px;
+  --article-max: 1400px;
+  --col-max: none;
+}
+
+/* ---------- Focus mode ----------
+   Hides the sidebar and the "On this page" rail and centres one column, the
+   way Safari Reader and iA Writer do.
+
+   The sidebar is not gone, it becomes a drawer: the existing toggle button
+   opens it over the page. That reuses Docsify's own `body.close` class with
+   the same inverted meaning it already has on mobile (close = drawer OPEN),
+   which is why custom.js treats focus mode like a phone when it sets `inert`. */
+:root[data-focus="on"] {
+  --layout-offset: 0px;
+  --reading-max: var(--article-max);
+}
+:root[data-focus="on"] .content { margin-left: 0; }
+:root[data-focus="on"] #page-toc { display: none; }
+:root[data-focus="on"] #reading-progress { left: 0; }
+
+:root[data-focus="on"] .sidebar {
+  transform: translateX(-100%);
+  z-index: 40;
+  box-shadow: var(--shadow-md);
+}
+:root[data-focus="on"] body.close .sidebar { transform: translateX(0); }
+
+:root[data-focus="on"] .sidebar-toggle { left: 14px; }
+:root[data-focus="on"] body.close .sidebar-toggle {
+  left: calc(min(var(--sidebar-width), 85vw) - 48px);
+}
+:root[data-focus="on"] .sidebar-toggle span {
+  transition: transform var(--transition), opacity var(--transition);
+}
+:root[data-focus="on"] body.close .sidebar-toggle span:nth-child(1) { transform: translateY(5px) rotate(45deg); }
+:root[data-focus="on"] body.close .sidebar-toggle span:nth-child(2) { opacity: 0; }
+:root[data-focus="on"] body.close .sidebar-toggle span:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
+
+/* The floating search button follows the drawer rule from command-palette.css:
+   shown while the drawer is shut (so search stays one click away), hidden
+   while it is open, because the drawer carries its own search field. */
+:root[data-focus="on"] .cp-mobile-trigger { display: flex; }
+:root[data-focus="on"] body.close .cp-mobile-trigger { display: none; }
+
+@media screen and (min-width: 1201px) {
+  /* No rail to reserve, so the article takes the whole centred region. */
+  :root[data-focus="on"] .markdown-section { width: 100%; }
+}
+
+/* ==========================================================================
+   Layout panel (layout-picker.js)
+   Sits beside the theme picker in the sidebar footer and opens upward, for
+   the same reason the theme menu does: the footer is pinned to the bottom.
+   ========================================================================== */
+
+.theme-switch-wrap {
+  position: relative;
+  display: flex;
+  gap: 8px;
+}
+.theme-switch-wrap .theme-picker { flex: 1; min-width: 0; position: static; }
+.theme-switch-wrap .theme-menu { left: 14px; right: 14px; bottom: calc(100% - 2px); }
+
+.layout-trigger {
+  flex: 0 0 auto;
+  width: 42px;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
+  color: var(--text-secondary);
+  font-family: 'Literata', Georgia, serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
+  cursor: pointer;
+  transition: border-color var(--transition), color var(--transition);
+}
+.layout-trigger:hover { border-color: var(--text-muted); color: var(--text); }
+.layout-trigger[aria-expanded="true"] { border-color: var(--accent); color: var(--accent); }
+.layout-trigger:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+.layout-trigger small { font-size: 0.72em; }
+
+/* Floating copy, beside the menu and search buttons in the top-left corner.
+   Shown exactly when the floating search button is (see command-palette.css):
+   whenever the sidebar, and so its own "Aa" button, is out of view. */
+.layout-float {
+  display: none;
+  position: fixed;
+  top: 14px;
+  left: 110px;
+  z-index: 50;
+  width: 34px;
+  min-height: 34px;
+  height: 34px;
+  border-width: 1px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+body.close .layout-float { display: flex; }
+@media screen and (max-width: 768px) {
+  .layout-float { display: flex; }
+  body.close .layout-float { display: none; }
+}
+:root[data-focus="on"] .layout-float { display: flex; }
+:root[data-focus="on"] body.close .layout-float { display: none; }
+
+/* While those floating buttons show on desktop, the article starts below
+   them - mobile already does this with the same 68px. Without it a Full-width
+   title ran underneath the menu, search and "Aa" buttons. */
+@media screen and (min-width: 769px) {
+  body.close .markdown-section,
+  :root[data-focus="on"] .markdown-section { padding-top: 68px; }
+}
+
+/* Fixed on <body>; layout-picker.js sets left/top/bottom/max-height from the
+   trigger that opened it. */
+.layout-panel {
+  position: fixed;
+  width: min(250px, calc(100vw - 24px));
+  z-index: 60;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--cp-shadow);
+  font-size: 13px;
+  color: var(--text);
+}
+.layout-panel[hidden] { display: none; }
+
+.lp-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.lp-title { font-size: 13px; font-weight: 600; }
+.lp-reset {
+  border: none;
+  background: none;
+  padding: 2px 4px;
+  border-radius: 5px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--accent);
+  cursor: pointer;
+}
+.lp-reset:hover { text-decoration: underline; }
+.lp-reset:disabled { color: var(--cp-muted); cursor: default; text-decoration: none; }
+.lp-reset:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* Native radios and a checkbox underneath everything: arrow keys, Space and
+   screen-reader semantics come for free. They are visually hidden, not
+   display:none, so they stay focusable. */
+.layout-panel input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  pointer-events: none;
+}
+
+/* ---------- Presets ---------- */
+/* `min-width: 0` on both fieldsets: a fieldset defaults to min-content, which
+   let the long preset blurbs push the list past the panel's edge. */
+.lp-presets { display: flex; flex-direction: column; gap: 2px; margin: 0 0 12px; padding: 0; border: 0; min-width: 0; }
+.lp-preset {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.lp-preset:hover { background: var(--bg-hover); }
+.lp-preset:has(input:checked) { background: var(--bg-active); border-color: var(--accent-dim); }
+.lp-preset:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -1px; }
+.lp-preview {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 24px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text-muted);
+}
+.lp-preset:has(input:checked) .lp-preview { color: var(--accent); border-color: var(--accent-dim); }
+.lp-preset-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
+.lp-preset-name { font-weight: 500; color: var(--text); }
+.lp-preset:has(input:checked) .lp-preset-name { color: var(--accent); }
+.lp-preset-blurb {
+  font-size: 11.5px;
+  color: var(--cp-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- Axis rows ---------- */
+.lp-row { margin: 0 0 8px; padding: 0; border: 0; min-width: 0; }
+.lp-row legend {
+  padding: 0;
+  margin-bottom: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--cp-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.lp-seg {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 2px;
+  padding: 2px;
+  background: var(--bg-code);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+}
+.lp-seg label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  min-height: 34px;
+  padding: 4px 2px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  text-align: center;
+  line-height: 1.15;
+}
+.lp-seg label:hover { color: var(--text); }
+.lp-seg label:has(input:checked) {
+  background: var(--bg-card);
+  color: var(--accent);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+.lp-seg label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -2px; }
+.lp-glyph { font-size: 15px; font-weight: 600; }
+.lp-cap { font-size: 10.5px; }
+.lp-seg svg { width: 18px; height: 14px; }
+
+/* ---------- Focus switch ---------- */
+.lp-switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  margin-top: 2px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.lp-switch:hover { background: var(--bg-hover); }
+.lp-switch:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -1px; }
+.lp-switch-text { flex: 1; display: flex; flex-direction: column; line-height: 1.3; }
+.lp-switch-text small { font-size: 11.5px; color: var(--cp-muted); }
+.lp-track {
+  flex: 0 0 auto;
+  position: relative;
+  width: 32px;
+  height: 18px;
+  border-radius: 9px;
+  background: var(--border);
+  transition: background var(--transition);
+}
+.lp-track::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: transform var(--transition);
+}
+.lp-switch:has(input:checked) .lp-track { background: var(--accent); }
+.lp-switch:has(input:checked) .lp-track::after { transform: translateX(14px); }
+
+@media (hover: none), (pointer: coarse) {
+  .layout-trigger { min-height: 44px; width: 46px; }
+  /* Matches its 34px neighbours in the corner; the touch target is widened
+     invisibly instead, the way .cp-mobile-trigger does it. */
+  .layout-trigger.layout-float { width: 34px; min-height: 34px; position: fixed; }
+  .layout-float::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+  .lp-seg label { min-height: 44px; }
+  .lp-preset { min-height: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layout-trigger,
+  .lp-track,
+  .lp-track::after,
+  :root[data-focus="on"] .sidebar-toggle span { transition: none !important; }
+}

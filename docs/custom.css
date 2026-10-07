@@ -26,6 +26,11 @@
   /* Horizontal offset the main column sits behind. Becomes 0 when the sidebar
      is collapsed, so the centring maths below follows it. */
   --layout-offset: var(--sidebar-width);
+  /* ---- reading layout: overridden per axis by layout.css ---- */
+  --read-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --read-size: 15px;      /* body text; headings, code and tables scale from it */
+  --read-leading: 1.8;
+  --col-max: 720px;       /* article cap below 1201px, where there is no TOC rail */
   --prose-max: 740px;     /* ~74ch at 15px Inter, inside the 75ch target */
   --article-max: var(--prose-max);   /* widened on large screens, see below */
   --toc-width: 200px;
@@ -216,7 +221,15 @@ body { overflow-x: hidden; }
 
 body.close .sidebar { transform: translateX(-100%); }
 body.close .content { margin-left: 0; }
-body.close { --layout-offset: 0px; }
+/* --reading-pad has to be re-declared here, not just --layout-offset: a custom
+   property is computed where it is declared (:root), so changing an input on
+   <body> left the inherited pad still allowing for a 272px sidebar. Collapsing
+   the sidebar used to slide the article left while the TOC stayed put, leaving
+   a ~330px dead gap between them. */
+body.close {
+  --layout-offset: 0px;
+  --reading-pad: max(48px, (100vw - var(--reading-max)) / 2);
+}
 
 @media screen and (max-width: 768px) {
   .sidebar {
@@ -406,15 +419,23 @@ body.close .sidebar-toggle { left: 14px; }
 
 /* ---------- Content typography ---------- */
 .markdown-section {
-  max-width: 720px;
+  max-width: var(--col-max);
+  font-family: var(--read-font);
   margin: 0 auto;
   padding: 40px 48px 100px;
+  /* Bare URLs (e.g. a "Sources" list) are one unbreakable word and pushed the
+     page 138px sideways on phones. `break-word`, not `anywhere`: it does not
+     lower min-content width, so table column sizing is unaffected. */
+  overflow-wrap: break-word;
 }
 @media screen and (max-width: 768px) {
   .markdown-section { padding: 68px 20px 60px; }
 }
+/* Every size below is a multiple of --read-size, so the reader's text-size
+   choice scales the whole hierarchy together. At the default 15px they work
+   out to the original fixed values (30/26/16/19/16/15/13/14/13px). */
 .markdown-section h1 {
-  font-size: 30px;
+  font-size: calc(var(--read-size) * 2);
   font-weight: 650;
   letter-spacing: -0.035em;
   line-height: 1.2;
@@ -423,15 +444,15 @@ body.close .sidebar-toggle { left: 14px; }
   border-bottom: none;
 }
 @media screen and (max-width: 768px) {
-  .markdown-section h1 { font-size: 26px; }
+  .markdown-section h1 { font-size: calc(var(--read-size) * 26 / 15); }
 }
 .markdown-section h1 + p {
-  font-size: 16px;
+  font-size: calc(var(--read-size) + 1px);
   color: var(--text-secondary);
   line-height: 1.6;
 }
 .markdown-section h2 {
-  font-size: 19px;
+  font-size: calc(var(--read-size) * 19 / 15);
   font-weight: 600;
   letter-spacing: -0.025em;
   color: var(--text);
@@ -441,7 +462,7 @@ body.close .sidebar-toggle { left: 14px; }
   scroll-margin-top: 24px;
 }
 .markdown-section h3 {
-  font-size: 16px;
+  font-size: calc(var(--read-size) + 1px);
   font-weight: 600;
   margin: 24px 0 8px;
   color: var(--text);
@@ -449,8 +470,8 @@ body.close .sidebar-toggle { left: 14px; }
 .markdown-section p,
 .markdown-section li {
   color: var(--text-secondary);
-  font-size: 15px;
-  line-height: 1.8;
+  font-size: var(--read-size);
+  line-height: var(--read-leading);
 }
 .markdown-section strong { color: var(--text); }
 .markdown-section a {
@@ -474,7 +495,7 @@ body.close .sidebar-toggle { left: 14px; }
 }
 .markdown-section pre > code {
   font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, monospace;
-  font-size: 13px;
+  font-size: calc(var(--read-size) - 2px);
   line-height: 1.75;
   color: var(--text);
   background: none;
@@ -498,6 +519,60 @@ body.close .sidebar-toggle { left: 14px; }
   border: 1px solid var(--border) !important;
   color: var(--text-secondary) !important;
   border-radius: 7px !important;
+}
+
+/* ---------- Tables ----------
+   No base Docsify theme is loaded, so until now tables fell back to browser
+   defaults: no borders, no padding, centred headers, cells vertically centred.
+   In a 279-table corpus that made rows hard to tell apart. `.table-wrap` and
+   the `.cell-*` classes are added by initTables() in custom.js. */
+.markdown-section .table-wrap {
+  margin: 20px 0 24px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  -webkit-overflow-scrolling: touch;
+}
+.markdown-section .table-wrap:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.markdown-section table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin: 0;
+  font-size: calc(var(--read-size) - 1px);
+  line-height: 1.6;
+}
+.markdown-section th,
+.markdown-section td {
+  padding: 10px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border-light);
+}
+/* Markdown alignment (`:---:`, `---:`) arrives as an inline style, which
+   beats the left-align above, so explicitly aligned columns still work. */
+.markdown-section th {
+  background: var(--bg-code);
+  color: var(--text);
+  font-weight: 600;
+  font-size: calc(var(--read-size) - 2px);
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+}
+.markdown-section td { color: var(--text-secondary); }
+.markdown-section tbody tr:last-child td { border-bottom: none; }
+.markdown-section tbody tr:nth-child(even) td { background: var(--bg-hover); }
+/* The first column is usually the row's label (Phase, Book, Option...). */
+.markdown-section td:first-child { color: var(--text); font-weight: 500; }
+.markdown-section td.cell-short { white-space: nowrap; }
+.markdown-section td.cell-long { min-width: 14em; }
+@media screen and (max-width: 768px) {
+  .markdown-section th,
+  .markdown-section td { padding: 8px 12px; }
 }
 
 /* ---------- Pagination ---------- */
@@ -655,7 +730,8 @@ body.close #reading-progress { left: 0; }
    this corpus - use the extra room. Without this the column simply floated in
    the middle of the window with ~700px of dead space beside it. */
 @media screen and (min-width: 1600px) {
-  :root { --article-max: 920px; }
+  /* 920px at the default 740px prose width; follows the reader's width choice. */
+  :root { --article-max: calc(var(--prose-max) + 180px); }
 
   .markdown-section > p,
   .markdown-section > ul,
