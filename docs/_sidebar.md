@@ -28,6 +28,7 @@
   - [Docker Cheatsheet — For Everyday Use](cheatsheets/docker-cheatsheet)
 
 - **Database**
+  - [SQL in Practice: The 20-Year Field Guide (Deep Research Edition)](database/SQL-in-Practice-Deep-Research-Edition)
   - **SQL**
     - [01 — The SELECT Statement](database/SQL/01_SELECT_statement)
     - [02 — SELECT DISTINCT](database/SQL/02_SELECT_DISTINCT)

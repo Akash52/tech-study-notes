@@ -48,6 +48,10 @@ Plain-language notes on things worth understanding properly — one topic at a t
 13. [GROUP BY — applied](database/SQL/11b_GROUP_BY_part2_applied.md) — real queries on the `payment` table; read every one with the word "per"
 14. [HAVING](database/SQL/12_HAVING.md) — filtering groups after aggregation, a `WHERE` for aggregate results
 
+*Going further — a book-length field guide for when the basics are done.*
+
+- [SQL in Practice](database/SQL-in-Practice-Deep-Research-Edition.md) — MySQL and PostgreSQL from first query to expert: joins, window functions, indexes, isolation, zero-downtime migrations, and a failure atlas of 14 real incidents
+
 ## Interview Prep
 
 *Question-and-answer guides — 8 notes. Dip in by topic.*
@@ -57,7 +61,7 @@ Plain-language notes on things worth understanding properly — one topic at a t
 - [React](interview-prep/react-interview-mastery-guide.md) — hooks, virtual DOM, Fiber, state, context, performance, Server Components, React 19
 - [TypeScript](interview-prep/typescript-interview-mastery-guide.md) — types, generics, utility types, decorators, conditional types, declaration merging
 - [Angular](interview-prep/angular-interview-questions.md) — components, services, NgModules, router, RxJS, signals, standalone, `@defer`
-- [Design Patterns](interview-prep/design-patterns-interview-mastery-guide.md) — the GoF 23, singleton, observer, factory, strategy, modern JS/TS patterns
+- [Design Patterns](interview-prep/design-patterns-interview-mastery-guide.md) — 10 core GoF patterns: singleton, factory, builder, adapter, decorator, proxy, observer and more
 - [Data Structures & Algorithms](interview-prep/dsa-interview-mastery-guide.md) — Big-O, arrays, trees, graphs, dynamic programming, sorting
 - [System Design](interview-prep/system-design-interview-mastery-guide.md) — scalability, CAP, caching, CQRS
 

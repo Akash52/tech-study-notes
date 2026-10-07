@@ -63,7 +63,8 @@
     'Reviewing a Pull Request Created by Copilot': 'Reviewing Copilot’s PR',
     'Tracking GitHub Copilot Sessions': 'Tracking Copilot Sessions',
     'Complete Interview Preparation — GitHub Copilot Features': 'Copilot Interview Prep',
-    'Git Day-to-Day Tricks & Scenarios': 'Git Tricks'
+    'Git Day-to-Day Tricks & Scenarios': 'Git Tricks',
+    'SQL in Practice: The 20-Year Field Guide (Deep Research Edition)': 'SQL in Practice'
   };
 
   function shorten(label) {
