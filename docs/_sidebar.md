@@ -29,6 +29,7 @@
 
 - **Database**
   - [SQL in Practice: The 20-Year Field Guide (Deep Research Edition)](database/SQL-in-Practice-Deep-Research-Edition)
+  - [DDIA Made Simple](database/designing-data-intensive-apps-playbook)
   - **SQL**
     - [01 — The SELECT Statement](database/SQL/01_SELECT_statement)
     - [02 — SELECT DISTINCT](database/SQL/02_SELECT_DISTINCT)
@@ -48,6 +49,7 @@
 - **Interview Prep**
   - [Angular Interview Questions and Answers](interview-prep/angular-interview-questions)
   - [Design Patterns Interview Mastery Guide](interview-prep/design-patterns-interview-mastery-guide)
+  - [Developer Interview Prep Guide](interview-prep/developer-interview-questions-all-stacks)
   - [Data Structures & Algorithms Interview Mastery Guide](interview-prep/dsa-interview-mastery-guide)
   - [JavaScript Interview Mastery Guide](interview-prep/javascript-interview-mastery-guide)
   - [React Interview Mastery Guide](interview-prep/react-interview-mastery-guide)

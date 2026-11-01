@@ -64,7 +64,11 @@
     'Tracking GitHub Copilot Sessions': 'Tracking Copilot Sessions',
     'Complete Interview Preparation — GitHub Copilot Features': 'Copilot Interview Prep',
     'Git Day-to-Day Tricks & Scenarios': 'Git Tricks',
-    'SQL in Practice: The 20-Year Field Guide (Deep Research Edition)': 'SQL in Practice'
+    'SQL in Practice: The 20-Year Field Guide (Deep Research Edition)': 'SQL in Practice',
+    /* "DDIA" means nothing until you know the book; its real title does. */
+    'DDIA Made Simple': 'Designing Data-Intensive Apps',
+    /* Seven other Interview Prep guides are one stack each; this one spans 14. */
+    'Developer Interview Prep Guide': 'Interview Q&A: All Stacks'
   };
 
   function shorten(label) {

@@ -581,6 +581,46 @@ body.close .sidebar-toggle { left: 14px; }
   .markdown-section td { padding: 8px 12px; }
 }
 
+/* ---------- Diagrams (diagrams.js) ----------
+   Mermaid output sits on a card like a code block, centred, and scrolls
+   sideways on a phone rather than shrinking to unreadable text. */
+.markdown-section .mermaid-diagram {
+  margin: 20px 0 24px;
+  padding: 20px;
+  overflow-x: auto;
+  text-align: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.markdown-section .mermaid-diagram svg { max-width: 100%; height: auto; min-width: 520px; }
+/* Mermaid 11 wraps each label in a <p> and sizes the box from its own
+   measurement. The article's paragraph rule (reading size, 1.8 leading,
+   margins, the reader's font) then enlarged the text inside boxes already
+   sized, cutting labels off mid-word. Labels get Mermaid's own metrics back. */
+.markdown-section .mermaid-diagram,
+.markdown-section .mermaid-diagram p {
+  /* Mermaid measures labels in a hidden node on <body>, which carries the
+     site's -0.01em tracking, so labels are drawn with that same tracking -
+     not `normal`, and not the 0 the serif/mono layouts give the article. */
+  letter-spacing: -0.01em;
+  line-height: 1.5;
+}
+.markdown-section .mermaid-diagram p {
+  margin: 0;
+  max-width: none;
+  font-size: inherit;
+  font-family: inherit;
+  color: inherit;
+}
+.markdown-section .mermaid-diagram.is-error {
+  text-align: left;
+  white-space: pre;
+  font-family: 'JetBrains Mono', monospace;
+}
+
 /* ---------- Pagination ---------- */
 .pagination-item-label { color: var(--text-muted); }
 .pagination-item-title { color: var(--accent) !important; }

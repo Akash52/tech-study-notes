@@ -90,13 +90,17 @@
   /* In-page links. Hand-written tables of contents use GitHub's heading slugs,
      which Docsify does not generate: "1. Introduction & Philosophy" is
      `1-introduction--philosophy` on GitHub but `_1-introduction-amp-philosophy`
-     here, so 37 contents links scrolled nowhere. Rather than rewrite the
+     here, so contents links scrolled nowhere. Rather than rewrite the
      sources (and break them on GitHub), links whose target is missing are
      pointed at the heading whose slug matches once both are normalised. */
+  /* Docsify slugs the heading's HTML, so entities leave residue in its ids
+     that GitHub slugs never contain: "&" -> "amp", "'" -> "39", '"' -> "quot".
+     The residue is stripped from BOTH sides, so a word that happens to contain
+     it ("example") is changed identically on each and still matches. */
   function slugKey(id) {
     return decodeURIComponent(id).toLowerCase()
       .replace(/^_+/, '')
-      .replace(/(^|-)amp(-|$)/g, '-')
+      .replace(/amp|quot|apos|#?39|#?34/g, '')
       .replace(/[^a-z0-9]+/g, '');
   }
 

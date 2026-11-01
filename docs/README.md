@@ -48,14 +48,16 @@ Plain-language notes on things worth understanding properly — one topic at a t
 13. [GROUP BY — applied](database/SQL/11b_GROUP_BY_part2_applied.md) — real queries on the `payment` table; read every one with the word "per"
 14. [HAVING](database/SQL/12_HAVING.md) — filtering groups after aggregation, a `WHERE` for aggregate results
 
-*Going further — a book-length field guide for when the basics are done.*
+*Going further — two book-length guides for when the basics are done.*
 
 - [SQL in Practice](database/SQL-in-Practice-Deep-Research-Edition.md) — MySQL and PostgreSQL from first query to expert: joins, window functions, indexes, isolation, zero-downtime migrations, and a failure atlas of 14 real incidents
+- [Designing Data-Intensive Apps](database/designing-data-intensive-apps-playbook.md) — Kleppmann's *DDIA* made hands-on: 12 modules building one NestJS + PostgreSQL ticketing app through replication, sharding, transactions, consensus and streams, plus a system design interview guide
 
 ## Interview Prep
 
-*Question-and-answer guides — 8 notes. Dip in by topic.*
+*Question-and-answer guides — 9 notes. Dip in by topic.*
 
+- [Interview Q&A: All Stacks](interview-prep/developer-interview-questions-all-stacks.md) — ~400 questions with spoken-style answers across 14 tracks: JavaScript to Java, Python, SQL, security, system design, DevOps and HR rounds, plus a 3-week plan
 - [JavaScript](interview-prep/javascript-interview-mastery-guide.md) — scope, closures, prototypes, async/await, the event loop, memory, ES6+
 - [The JavaScript Interview Bible](javascript-interview-bible.md) — engine internals through to production war stories, chapter by chapter
 - [React](interview-prep/react-interview-mastery-guide.md) — hooks, virtual DOM, Fiber, state, context, performance, Server Components, React 19
