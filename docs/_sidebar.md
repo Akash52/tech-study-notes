@@ -30,6 +30,9 @@
 - **Database**
   - [SQL in Practice: The 20-Year Field Guide (Deep Research Edition)](database/SQL-in-Practice-Deep-Research-Edition)
   - [DDIA Made Simple](database/designing-data-intensive-apps-playbook)
+  - **CMU Database Systems**
+    - [Database Notes – Lecture 1: Relational Model & Relational Algebra](database/CMU-Database-Systems/01_Relational_Model_and_Algebra)
+    - [Lecture 2 – Modern SQL (Full Engineer Notes)](database/CMU-Database-Systems/02_Modern_SQL)
   - **SQL**
     - [01 — The SELECT Statement](database/SQL/01_SELECT_statement)
     - [02 — SELECT DISTINCT](database/SQL/02_SELECT_DISTINCT)

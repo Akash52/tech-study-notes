@@ -39,6 +39,11 @@
        Statement"). The number is rendered separately as a prefix, so keeping it
        in the label too would read "1 01 — The SELECT Statement". */
     /^\d+[a-z]?\s*[—–-]\s*/,
+    /* Lecture notes carry the lecture number in their H1, worded differently
+       each time ("Database Notes – Lecture 1: ...", "Lecture 2 – ..."). The
+       number already shows as the prefix, so the wording is dropped. */
+    /^(?:Database Notes\s*[—–-]\s*)?Lecture\s+\d+\s*[:—–-]\s*/,
+    / \(Full Engineer Notes\)$/,
     / — "Smoosh Mode"$/,
     / — “Smoosh Mode”$/
   ];

@@ -48,6 +48,11 @@ Plain-language notes on things worth understanding properly — one topic at a t
 13. [GROUP BY — applied](database/SQL/11b_GROUP_BY_part2_applied.md) — real queries on the `payment` table; read every one with the word "per"
 14. [HAVING](database/SQL/12_HAVING.md) — filtering groups after aggregation, a `WHERE` for aggregate results
 
+*CMU 15-445 Database Systems — lecture-by-lecture notes on Andy Pavlo's course, written to copy into a notebook. A series in progress.*
+
+1. [Relational Model & Algebra](database/CMU-Database-Systems/01_Relational_Model_and_Algebra.md) — what a DBMS is, keys and constraints, and the 7 relational algebra operators with worked examples
+2. [Modern SQL](database/CMU-Database-Systems/02_Modern_SQL.md) — sets vs bags, logical SELECT order, GROUPING SETS, dialect chaos in strings and dates, LATERAL, CTEs and the `NOT IN` + NULL trap
+
 *Going further — two book-length guides for when the basics are done.*
 
 - [SQL in Practice](database/SQL-in-Practice-Deep-Research-Edition.md) — MySQL and PostgreSQL from first query to expert: joins, window functions, indexes, isolation, zero-downtime migrations, and a failure atlas of 14 real incidents
